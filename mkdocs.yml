@@ -1,6 +1,5 @@
 site_name: "Hacking Archive"
 site_description: "Various writeups and guides for Hack The Box machines and challenges."
-repo_url: https://github.com/egz-dev/HTB
 theme:
   name: material
   language: en
