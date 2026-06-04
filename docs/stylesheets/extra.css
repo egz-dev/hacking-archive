@@ -233,9 +233,9 @@
 }
 
 /* ========== TYPOGRAPHY ========== */
-/* Bold text with custom highlight color */
+/* Bold text with warning color */
 .md-typeset strong {
-  color: var(--md-accent-fg-color);
+  color: #ff9100;
   font-weight: 700;
 }
 
