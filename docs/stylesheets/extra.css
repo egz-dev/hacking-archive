@@ -80,11 +80,9 @@
   border-radius: 12px;
   margin: 24px 0;
   background: #0d1117;
+  border: 1px solid var(--md-default-fg-color--lightest);
   box-shadow:
-    0 0 0 1px rgba(255,255,255,0.05),
-    0 4px 24px rgba(0,0,0,0.4),
-    0 0 60px rgba(0,200,100,0.06),
-    inset 0 1px 0 rgba(255,255,255,0.02);
+    0 2px 12px rgba(0,0,0,0.15);
   overflow: hidden;
   transition: box-shadow 0.3s ease;
 }
@@ -218,12 +216,10 @@
   opacity: 0.8;
 }
 
-/* Hover glow effect */
+/* Hover subtle lift */
 .md-typeset .highlight:hover {
   box-shadow:
-    0 0 0 1px rgba(0,200,100,0.2),
-    0 4px 24px rgba(0,0,0,0.4),
-    0 0 80px rgba(0,200,100,0.12);
+    0 4px 20px rgba(0,0,0,0.25);
 }
 
 /* Inline code with backticks in headers */
@@ -260,11 +256,14 @@
 }
 
 .md-typeset table:not([class]) th {
-  background: var(--md-code-bg-color);
+  background: var(--md-default-fg-color--lightest);
   color: var(--md-typeset-color);
-  font-weight: 600;
+  font-weight: 500;
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
   padding: 10px 16px;
-  border-bottom: 2px solid var(--md-default-fg-color--lightest);
+  border-bottom: 2px solid var(--md-default-fg-color--lighter);
 }
 
 .md-typeset table:not([class]) td {
