@@ -63,10 +63,10 @@ nav:
       - 🩰 Dancing: writeups/🩰 Dancing.md
   - Guides:
       - guides/index.md
-      - ✅ Checklist CTF: guides/✅ Checklist CTF.md
-      - 💣 Gobuster - Practical Guide: guides/💣 Gobuster - Practical Guide.md
-      - 📂 SMB - Practical Guide: guides/📂 SMB - Practical Guide.md
-      - 🖥️ Xfreerdp - Practical Guide: guides/🖥️ xfreerdp - Practical Guide.md
-      - 🗃️ FTP - Practical Guide: guides/🗃️ FTP - Practical Guide.md
-      - 🗄️ Redis - Practical Guide: guides/🗄️ Redis - Practical Guide.md
+      - ✅ Checklist Ctf: guides/✅ Checklist CTF.md
+      - 💣 Gobuster   Practical Guide: guides/💣 Gobuster - Practical Guide.md
+      - 📂 Smb   Practical Guide: guides/📂 SMB - Practical Guide.md
+      - 🖥️ Xfreerdp   Practical Guide: guides/🖥️ xfreerdp - Practical Guide.md
+      - 🗃️ Ftp   Practical Guide: guides/🗃️ FTP - Practical Guide.md
+      - 🗄️ Redis   Practical Guide: guides/🗄️ Redis - Practical Guide.md
 # --nav-auto-end--

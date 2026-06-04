@@ -246,6 +246,11 @@ def create_index(dst_dir: Path, title: str, entries: list[str]) -> None:
                         icon = ch
                         break
 
+            # Plain name without emoji for cleaner cards
+            plain_name = name
+            if icon and icon in name:
+                plain_name = name.replace(icon, "").strip()
+
             badges_html = ""
             if props.get("OS"):
                 badges_html += f' <span class="prop-badge {badge_class("OS", props["OS"])}">{props["OS"]}</span>'
@@ -253,8 +258,7 @@ def create_index(dst_dir: Path, title: str, entries: list[str]) -> None:
                 badges_html += f' <span class="prop-badge {badge_class("Level", props["Level"])}">{props["Level"]}</span>'
 
             lines.append(f'<a class="machine-card" href="{link}.md">')
-            lines.append(f'  <span class="card-icon">{icon}</span>')
-            lines.append(f'  <span class="card-title">{name}</span>')
+            lines.append(f'  <span class="card-title">{icon} {plain_name}</span>')
             if badges_html:
                 lines.append(f'  <span class="card-meta">{badges_html}</span>')
             lines.append('</a>')

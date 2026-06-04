@@ -343,7 +343,9 @@
 .machine-card {
   display: flex;
   flex-direction: column;
-  padding: 18px;
+  align-items: center;
+  text-align: center;
+  padding: 20px 18px;
   border-radius: 12px;
   border: 1px solid var(--md-default-fg-color--lightest);
   background: var(--md-code-bg-color);
@@ -357,14 +359,9 @@
   border-color: var(--md-accent-fg-color);
 }
 
-.machine-card .card-icon {
-  font-size: 1.6em;
-  margin-bottom: 6px;
-}
-
 .machine-card .card-title {
   font-weight: 700;
-  font-size: 1.05em;
+  font-size: 1.15em;
   color: var(--md-typeset-color);
 }
 
@@ -372,12 +369,14 @@
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
-  margin-top: 10px;
+  margin-top: 12px;
+  justify-content: center;
 }
 
 .machine-card .card-meta .prop-badge {
-  font-size: 0.72em;
-  padding: 2px 10px;
+  font-size: 0.7em;
+  padding: 3px 12px;
+  border-radius: 24px;
 }
 
 /* ========== SCREENSHOTS / IMAGES ========== */
