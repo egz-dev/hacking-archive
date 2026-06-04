@@ -240,11 +240,9 @@
 .md-typeset h1 {
   font-weight: 800;
   letter-spacing: -0.5px;
-  color: var(--md-primary-fg-color);
-  background: linear-gradient(135deg, var(--md-primary-fg-color), var(--md-accent-fg-color));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  padding-bottom: 8px;
+  border-bottom: 3px solid;
+  border-image: linear-gradient(90deg, var(--md-primary-fg-color), var(--md-accent-fg-color), transparent) 1;
 }
 
 .md-typeset h2 {
