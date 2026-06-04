@@ -3,12 +3,11 @@ IP: 10.129.10.7
 OS: Windows
 Level: Very Easy
 ---
-
+# 💥 Explosion
 <div class="machine-properties">
   <span class="prop-ip">10.129.10.7</span> <span class="prop-badge windows">Windows</span> <span class="prop-badge very-easy">Very Easy</span>
 </div>
 
-# 💥 Explosion
 
 Explosion is a **Very Easy** Windows box that demonstrates how a misconfigured RDP server with a null/empty Administrator password allows unauthenticated GUI access via `xfreerdp`.
 

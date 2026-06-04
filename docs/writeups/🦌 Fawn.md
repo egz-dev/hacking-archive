@@ -3,12 +3,11 @@ IP: 10.129.21.178
 OS: Linux
 Level: Very Easy
 ---
-
+# 🦌 Fawn
 <div class="machine-properties">
   <span class="prop-ip">10.129.21.178</span> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span>
 </div>
 
-# 🦌 Fawn
 
 Fawn is a **Very Easy** Linux box that demonstrates how a misconfigured FTP server allowing anonymous access can lead to a full compromise.
 

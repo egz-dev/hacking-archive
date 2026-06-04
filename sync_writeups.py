@@ -95,7 +95,8 @@ def badge_class(key: str, value: str) -> str:
 
 
 def inject_properties_card(md_path: Path) -> None:
-    """Read a .md, extract its frontmatter, and insert an HTML properties badge bar."""
+    """Read a .md, extract its frontmatter, and insert an HTML properties badge bar
+    right after the first h1 heading."""
     text = md_path.read_text()
     result = parse_frontmatter(text)
     if not result:
@@ -128,8 +129,18 @@ def inject_properties_card(md_path: Path) -> None:
     if not parts:
         return
 
-    badge_bar = f'\n\n<div class="machine-properties">\n  {" ".join(parts)}\n</div>\n'
-    new_text = text[:end_of_fm] + badge_bar + text[end_of_fm:]
+    badge_bar = f'\n<div class="machine-properties">\n  {" ".join(parts)}\n</div>\n'
+
+    # Find the first h1 heading and insert the badge bar right after it
+    h1_match = re.search(r'^# .+$', text, re.MULTILINE)
+    if h1_match:
+        insert_pos = h1_match.end()
+        new_text = text[:insert_pos] + badge_bar + text[insert_pos:]
+    else:
+        # Fallback: insert after frontmatter
+        insert_pos = end_of_fm
+        new_text = text[:insert_pos] + badge_bar + text[insert_pos:]
+
     md_path.write_text(new_text)
     print(f"    ↳ Properties injected: {', '.join(f'{k}={v}' for k, v in props.items())}")
 

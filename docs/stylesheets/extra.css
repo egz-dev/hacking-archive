@@ -2,35 +2,35 @@
 .machine-properties {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 6px;
   align-items: center;
-  padding: 14px 18px;
-  margin: 20px 0 24px 0;
+  padding: 10px 14px;
+  margin: 0 0 20px 0;
   background: var(--md-code-bg-color);
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid var(--md-default-fg-color--lightest);
 }
 
 .machine-properties .prop-ip {
   font-family: var(--md-code-font-family);
-  font-size: 0.9em;
+  font-size: 0.82em;
   color: var(--md-code-hl-special-color);
   background: var(--md-code-bg-color);
-  padding: 4px 10px;
-  border-radius: 6px;
+  padding: 3px 8px;
+  border-radius: 5px;
   border: 1px solid var(--md-default-fg-color--lighter);
-  margin-right: 4px;
+  margin-right: 2px;
 }
 
 .machine-properties .prop-badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.82em;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 16px;
+  font-size: 0.72em;
   font-weight: 600;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
   text-transform: uppercase;
 }
 

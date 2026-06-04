@@ -3,12 +3,11 @@ IP: 10.129.1.12
 OS: Windows
 Level: Very Easy
 ---
-
+# 🩰 Dancing
 <div class="machine-properties">
   <span class="prop-ip">10.129.1.12</span> <span class="prop-badge windows">Windows</span> <span class="prop-badge very-easy">Very Easy</span>
 </div>
 
-# 🩰 Dancing
 
 Dancing is a **Very Easy** Windows box that demonstrates how a misconfigured SMB server allowing anonymous access to network shares can lead to information disclosure.
 
