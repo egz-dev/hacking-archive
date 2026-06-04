@@ -456,7 +456,8 @@
 
 /* Hide default mkdocs-material attribution */
 .md-footer-meta .md-social,
-.md-footer-meta .md-footer-meta__inner > :not(.md-copyright) {
+.md-footer-meta .md-footer-meta__inner > :not(.md-copyright),
+.md-copyright__highlight {
   display: none;
 }
 
