@@ -168,8 +168,27 @@ def copy_content(src_dir: Path, dst_dir: Path, label: str) -> list[str]:
     return entries
 
 
+LEVEL_ORDER = ["Very Easy", "Easy", "Medium", "Hard", "Insane"]
+
+
+def get_entry_level(entry: str) -> str:
+    """Read the frontmatter of a writeup and return its normalized Level. Defaults to 'Other'."""
+    md_path = DOCS_DIR / f"{entry}.md"
+    if not md_path.exists():
+        return "Other"
+    result = parse_frontmatter(md_path.read_text())
+    if not result:
+        return "Other"
+    raw = result[0].get("Level", "")
+    if not raw:
+        return "Other"
+    # Normalize: "very-easy" → "Very Easy", "VERY EASY" → "Very Easy"
+    normalized = raw.replace("-", " ").title()
+    return normalized if normalized in LEVEL_ORDER else "Other"
+
+
 def generate_nav(writeup_entries: list[str], guia_entries: list[str]) -> str:
-    """Generate the 'nav' section of mkdocs.yml with the discovered entries."""
+    """Generate the 'nav' section of mkdocs.yml grouped by difficulty."""
     lines = [
         "nav:",
         '  - Home: index.md',
@@ -178,9 +197,25 @@ def generate_nav(writeup_entries: list[str], guia_entries: list[str]) -> str:
     if writeup_entries:
         lines.append("  - Writeups:")
         lines.append("      - writeups/index.md")
+
+        # Group by difficulty
+        groups: dict[str, list[str]] = {level: [] for level in LEVEL_ORDER}
+        groups["Other"] = []
         for entry in writeup_entries:
-            name = entry.split("/")[-1].replace("-", " ").replace("_", " ").title()
-            lines.append(f"      - {name}: {entry}.md")
+            level = get_entry_level(entry)
+            groups.setdefault(level, []).append(entry)
+
+        for level in LEVEL_ORDER:
+            if groups.get(level):
+                lines.append(f"      - {level}:")
+                for entry in groups[level]:
+                    name = entry.split("/")[-1].replace("-", " ").replace("_", " ").title()
+                    lines.append(f"          - {name}: {entry}.md")
+        if groups.get("Other"):
+            lines.append("      - Other:")
+            for entry in groups["Other"]:
+                name = entry.split("/")[-1].replace("-", " ").replace("_", " ").title()
+                lines.append(f"          - {name}: {entry}.md")
     else:
         lines.append("  - Writeups: writeups/index.md")
 

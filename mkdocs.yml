@@ -56,11 +56,12 @@ nav:
   - Home: index.md
   - Writeups:
       - writeups/index.md
-      - 💥 Explosion: writeups/💥 Explosion.md
-      - 💾 Redeemer: writeups/💾 Redeemer.md
-      - 🦌 Fawn: writeups/🦌 Fawn.md
-      - 🧨 Preignition: writeups/🧨 Preignition.md
-      - 🩰 Dancing: writeups/🩰 Dancing.md
+      - Very Easy:
+          - 💥 Explosion: writeups/💥 Explosion.md
+          - 💾 Redeemer: writeups/💾 Redeemer.md
+          - 🦌 Fawn: writeups/🦌 Fawn.md
+          - 🧨 Preignition: writeups/🧨 Preignition.md
+          - 🩰 Dancing: writeups/🩰 Dancing.md
   - Guides:
       - guides/index.md
       - ✅ Checklist Ctf: guides/✅ Checklist CTF.md
