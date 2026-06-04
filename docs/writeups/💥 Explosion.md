@@ -4,9 +4,9 @@ OS: Windows
 Level: Very Easy
 ---
 
-| IP | OS | Level |
-|---|---|---|
-| 10.129.10.7 | Windows | Very Easy |
+<div class="machine-properties">
+  <span class="prop-ip">10.129.10.7</span> <span class="prop-badge windows">Windows</span> <span class="prop-badge very-easy">Very Easy</span>
+</div>
 
 # 💥 Explosion
 

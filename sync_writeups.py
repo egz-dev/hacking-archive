@@ -24,7 +24,7 @@ DOCS_DIR = Path("docs")
 # Mapeo de carpetas del repo origen a docs/
 FOLDER_MAP = {
     "machines": "writeups",
-    "documentación": "guias",
+    "documentation": "guias",
 }
 
 
@@ -77,32 +77,59 @@ def parse_frontmatter(text: str) -> tuple[dict[str, str], int] | None:
     return props, match.end()
 
 
-def inject_properties_table(md_path: Path) -> None:
-    """Lee un .md, extrae su frontmatter, e inserta una tabla de propiedades."""
+def badge_class(key: str, value: str) -> str:
+    """Devuelve la clase CSS para el badge según la clave y valor."""
+    if key == "OS":
+        v = value.lower()
+        if "windows" in v:
+            return "windows"
+        if "linux" in v:
+            return "linux"
+    if key == "Level":
+        v = value.lower().replace(" ", "-")
+        if v in ("very-easy", "easy", "medium", "hard", "insane"):
+            return v
+    if key == "Skills":
+        return "skills"
+    return ""
+
+
+def inject_properties_card(md_path: Path) -> None:
+    """Lee un .md, extrae su frontmatter, e inserta una barra de propiedades con badges HTML."""
     text = md_path.read_text()
     result = parse_frontmatter(text)
     if not result:
         return
     props, end_of_fm = result
 
-    # Construir tabla Markdown con las propiedades
-    labels: list[str] = []
-    values: list[str] = []
-    for key in ("IP", "OS", "Level", "Skills"):
-        if key in props and props[key]:
-            labels.append(key)
-            values.append(props[key])
+    parts: list[str] = []
 
-    if not labels:
+    # IP como código inline
+    if props.get("IP"):
+        parts.append(f'<span class="prop-ip">{props["IP"]}</span>')
+
+    # OS badge
+    if props.get("OS"):
+        cls = badge_class("OS", props["OS"])
+        parts.append(f'<span class="prop-badge {cls}">{props["OS"]}</span>')
+
+    # Level badge
+    if props.get("Level"):
+        cls = badge_class("Level", props["Level"])
+        parts.append(f'<span class="prop-badge {cls}">{props["Level"]}</span>')
+
+    # Skills badge (puede tener varias separadas por coma)
+    if props.get("Skills"):
+        for skill in props["Skills"].split(","):
+            skill = skill.strip()
+            if skill:
+                parts.append(f'<span class="prop-badge skills">{skill}</span>')
+
+    if not parts:
         return
 
-    header = "| " + " | ".join(labels) + " |"
-    sep = "|" + "|".join("---" for _ in labels) + "|"
-    row = "| " + " | ".join(values) + " |"
-    table = f"\n\n{header}\n{sep}\n{row}\n"
-
-    # Insertar la tabla justo después del frontmatter
-    new_text = text[:end_of_fm] + table + text[end_of_fm:]
+    badge_bar = f'\n\n<div class="machine-properties">\n  {" ".join(parts)}\n</div>\n'
+    new_text = text[:end_of_fm] + badge_bar + text[end_of_fm:]
     md_path.write_text(new_text)
     print(f"    ↳ Propiedades inyectadas: {', '.join(f'{k}={v}' for k, v in props.items())}")
 
@@ -133,7 +160,7 @@ def copy_content(src_dir: Path, dst_dir: Path, label: str) -> list[str]:
                 break  # solo el primer .md por carpeta
         elif item.suffix == ".md":
             shutil.copy2(item, dest)
-            inject_properties_table(dest)
+            inject_properties_card(dest)
             rel = dest.relative_to(DOCS_DIR)
             entries.append(str(rel.with_suffix("")))
 
@@ -192,17 +219,48 @@ def update_mkdocs_nav(writeup_entries: list[str], guia_entries: list[str]) -> No
 
 
 def create_index(dst_dir: Path, title: str, entries: list[str]) -> None:
-    """Crea un index.md en dst_dir con enlaces a las entradas."""
+    """Crea un index.md en dst_dir con tarjetas vistosas para cada entrada."""
     index_path = dst_dir / "index.md"
     index_path.parent.mkdir(parents=True, exist_ok=True)
 
     lines = [f"# {title}", ""]
     if entries:
+        lines.append('<div class="machine-grid">')
         for entry in entries:
             name = entry.split("/")[-1].replace("-", " ").replace("_", " ").title()
-            lines.append(f"- [{name}]({entry.split('/', 1)[1] if '/' in entry else entry}.md)")
+            link = entry.split('/', 1)[1] if '/' in entry else entry
+
+            # Extrar frontmatter del .md original para mostrar badges en la card
+            md_file = DOCS_DIR / f"{entry}.md"
+            props: dict[str, str] = {}
+            if md_file.exists():
+                result = parse_frontmatter(md_file.read_text())
+                if result:
+                    props, _ = result
+
+            icon = props.get("Icon", "📦")
+            # Usar el emoji del título o el primer emoji del nombre
+            if not icon or icon == "📦":
+                for ch in name:
+                    if ord(ch) > 127:
+                        icon = ch
+                        break
+
+            badges_html = ""
+            if props.get("OS"):
+                badges_html += f' <span class="prop-badge {badge_class("OS", props["OS"])}">{props["OS"]}</span>'
+            if props.get("Level"):
+                badges_html += f' <span class="prop-badge {badge_class("Level", props["Level"])}">{props["Level"]}</span>'
+
+            lines.append(f'<a class="machine-card" href="{link}.md">')
+            lines.append(f'  <span class="card-icon">{icon}</span>')
+            lines.append(f'  <span class="card-title">{name}</span>')
+            if badges_html:
+                lines.append(f'  <span class="card-meta">{badges_html}</span>')
+            lines.append('</a>')
+        lines.append('</div>')
     else:
-        lines.append("_No hay entradas todavía._")
+        lines.append("> ℹ️ No hay entradas todavía. Cuando añadas guías en la carpeta `documentación/` del repositorio de writeups, aparecerán aquí automáticamente.")
 
     index_path.write_text("\n".join(lines) + "\n")
     print(f"  ✓ index.md creado en {dst_dir}")

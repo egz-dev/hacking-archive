@@ -4,9 +4,9 @@ OS: Linux
 Level: Very Easy
 ---
 
-| OS | Level |
-|---|---|
-| Linux | Very Easy |
+<div class="machine-properties">
+  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span>
+</div>
 
 # 🧨 Preignition
 

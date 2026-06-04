@@ -4,9 +4,9 @@ OS: Linux
 Level: Very Easy
 ---
 
-| IP | OS | Level |
-|---|---|---|
-| 10.129.136.187 | Linux | Very Easy |
+<div class="machine-properties">
+  <span class="prop-ip">10.129.136.187</span> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span>
+</div>
 
 # 💾 Redeemer
 

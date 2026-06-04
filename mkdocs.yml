@@ -42,6 +42,9 @@ markdown_extensions:
   - toc:
       permalink: true
 
+extra_css:
+  - stylesheets/extra.css
+
 plugins:
   - search
 
@@ -55,5 +58,12 @@ nav:
       - 🦌 Fawn: writeups/🦌 Fawn.md
       - 🧨 Preignition: writeups/🧨 Preignition.md
       - 🩰 Dancing: writeups/🩰 Dancing.md
-  - Guías: guias/index.md
+  - Guías:
+      - guias/index.md
+      - ✅ Checklist Ctf: guias/✅ Checklist CTF.md
+      - 💣 Gobuster   Practical Guide: guias/💣 Gobuster - Practical Guide.md
+      - 📂 Smb   Practical Guide: guias/📂 SMB - Practical Guide.md
+      - 🖥️ Xfreerdp   Practical Guide: guias/🖥️ xfreerdp - Practical Guide.md
+      - 🗃️ Ftp   Practical Guide: guias/🗃️ FTP - Practical Guide.md
+      - 🗄️ Redis   Practical Guide: guias/🗄️ Redis - Practical Guide.md
 # --nav-auto-end--
