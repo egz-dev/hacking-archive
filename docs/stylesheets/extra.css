@@ -241,14 +241,14 @@
   font-weight: 800;
   letter-spacing: -0.5px;
   padding-bottom: 8px;
-  border-bottom: 3px solid;
-  border-image: linear-gradient(90deg, var(--md-primary-fg-color), var(--md-accent-fg-color), transparent) 1;
+  border-bottom: 2px solid;
+  border-image: linear-gradient(90deg, var(--md-default-fg-color--lighter), transparent) 1;
 }
 
 .md-typeset h2 {
   font-weight: 700;
   padding-bottom: 6px;
-  border-bottom: 2px solid var(--md-primary-fg-color);
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
   margin-top: 36px;
 }
 
@@ -256,14 +256,15 @@
 .md-typeset table:not([class]) {
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 .md-typeset table:not([class]) th {
-  background: var(--md-primary-fg-color);
-  color: var(--md-primary-bg-color);
+  background: var(--md-code-bg-color);
+  color: var(--md-typeset-color);
   font-weight: 600;
   padding: 10px 16px;
+  border-bottom: 2px solid var(--md-default-fg-color--lightest);
 }
 
 .md-typeset table:not([class]) td {
