@@ -73,17 +73,167 @@
 }
 
 /* ========== CODE BLOCKS ========== */
-.md-typeset pre > code {
-  border-radius: 8px;
-  padding: 14px 18px;
+
+/* Terminal window wrapper */
+.md-typeset .highlight {
+  position: relative;
+  border-radius: 12px;
+  margin: 24px 0;
+  background: #0d1117;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.05),
+    0 4px 24px rgba(0,0,0,0.4),
+    0 0 60px rgba(0,200,100,0.06),
+    inset 0 1px 0 rgba(255,255,255,0.02);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
 }
 
+/* Scanline overlay */
+.md-typeset .highlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  z-index: 1;
+  border-radius: 12px;
+}
+
+/* Fake terminal title bar */
+.md-typeset .highlight > pre,
+.md-typeset .highlight > table {
+  position: relative;
+  padding-top: 38px !important;
+}
+
+.md-typeset .highlight > pre::before,
+.md-typeset .highlight > table::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%),
+    #161b22;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px 12px 0 0;
+  z-index: 2;
+}
+
+/* Terminal dots: red, yellow, green */
+.md-typeset .highlight > pre::after,
+.md-typeset .highlight > table::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  width: 44px;
+  height: 8px;
+  background:
+    radial-gradient(circle 3.5px, #ff5f56 100%, transparent 100%) 0 50%,
+    radial-gradient(circle 3.5px, #ffbd2e 100%, transparent 100%) 16px 50%,
+    radial-gradient(circle 3.5px, #27c93f 100%, transparent 100%) 32px 50%;
+  background-repeat: no-repeat;
+  z-index: 3;
+}
+
+/* Language tag in title bar */
+.md-typeset .highlight .md-clipboard {
+  z-index: 4;
+}
+
+/* Code pre styling */
+.md-typeset .highlight pre {
+  background: transparent !important;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0;
+}
+
+.md-typeset .highlight pre > code {
+  background: transparent !important;
+  padding: 12px 18px 16px 18px;
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", "SF Mono", monospace;
+  font-size: 0.85em;
+  line-height: 1.65;
+  position: relative;
+  z-index: 0;
+}
+
+/* Line numbers */
+.md-typeset .highlight .linenos {
+  background: rgba(0,0,0,0.3) !important;
+  color: rgba(255,255,255,0.2) !important;
+  padding: 12px 10px 16px 14px !important;
+  user-select: none;
+  text-align: right;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  font-size: 0.8em;
+}
+
+/* Inline code */
 .md-typeset code:not(pre code) {
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 2px 7px;
+  border-radius: 5px;
   font-weight: 500;
+  font-size: 0.9em;
   background: var(--md-code-bg-color);
   color: var(--md-code-hl-special-color);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  white-space: nowrap;
+}
+
+/* Copy button */
+.md-typeset .highlight .md-clipboard {
+  color: rgba(255,255,255,0.3) !important;
+  transition: all 0.2s ease;
+}
+
+.md-typeset .highlight .md-clipboard:hover {
+  color: rgba(255,255,255,0.8) !important;
+}
+
+.md-typeset .highlight .md-clipboard:has(.md-clipboard--success) {
+  color: #00c853 !important;
+}
+
+/* Prompt styling ($ or #) - when using code with prompt */
+.md-typeset .highlight .gp,
+.md-typeset .highlight .gh {
+  color: #00ff41 !important;
+  user-select: none;
+}
+
+/* Command output dimmed */
+.md-typeset .highlight .go {
+  opacity: 0.8;
+}
+
+/* Hover glow effect */
+.md-typeset .highlight:hover {
+  box-shadow:
+    0 0 0 1px rgba(0,200,100,0.2),
+    0 4px 24px rgba(0,0,0,0.4),
+    0 0 80px rgba(0,200,100,0.12);
+}
+
+/* Inline code with backticks in headers */
+.md-typeset h1 code,
+.md-typeset h2 code,
+.md-typeset h3 code {
+  background: rgba(0,200,100,0.12) !important;
+  border: 1px solid rgba(0,200,100,0.2);
+  color: #00c853 !important;
+  font-weight: 600;
 }
 
 /* ========== HEADINGS ========== */
