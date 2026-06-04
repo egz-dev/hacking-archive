@@ -3,6 +3,9 @@ site_description: "Various writeups and guides for Hack The Box machines and cha
 theme:
   name: material
   language: en
+  font:
+    text: Fira Code
+    code: Fira Code
   palette:
     - scheme: slate
       primary: blue grey
