@@ -1,6 +1,10 @@
 # HTB Machine Writeups
 
 <div class="machine-grid">
+<a class="machine-card" href="👹 Mongod/">
+  <span class="card-title">👹 Mongod</span>
+  <span class="card-meta"> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span></span>
+</a>
 <a class="machine-card" href="💥 Explosion/">
   <span class="card-title">💥 Explosion</span>
   <span class="card-meta"> <span class="prop-badge windows">Windows</span> <span class="prop-badge very-easy">Very Easy</span></span>

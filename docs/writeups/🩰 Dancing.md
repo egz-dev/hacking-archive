@@ -2,6 +2,7 @@
 IP: 10.129.1.12
 OS: Windows
 Level: Very Easy
+Skills:
 ---
 # 🩰 Dancing
 <div class="machine-properties">

@@ -1,11 +1,12 @@
 ---
-IP:
+IP: 10.129.10.187
 OS: Linux
 Level: Very Easy
+Skills:
 ---
 # 🧨 Preignition
 <div class="machine-properties">
-  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span>
+  <span class="prop-ip">10.129.10.187</span> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span>
 </div>
 
 

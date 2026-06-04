@@ -2,6 +2,7 @@
 IP: 10.129.10.7
 OS: Windows
 Level: Very Easy
+Skills:
 ---
 # 💥 Explosion
 <div class="machine-properties">

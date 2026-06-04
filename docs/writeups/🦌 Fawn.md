@@ -2,6 +2,7 @@
 IP: 10.129.21.178
 OS: Linux
 Level: Very Easy
+Skills:
 ---
 # 🦌 Fawn
 <div class="machine-properties">

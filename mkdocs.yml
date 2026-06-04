@@ -51,6 +51,7 @@ nav:
   - Writeups:
       - writeups/index.md
       - Very Easy:
+          - 👹 Mongod: writeups/👹 Mongod.md
           - 💥 Explosion: writeups/💥 Explosion.md
           - 💾 Redeemer: writeups/💾 Redeemer.md
           - 🦌 Fawn: writeups/🦌 Fawn.md
@@ -59,6 +60,7 @@ nav:
   - Guides:
       - guides/index.md
       - ✅ Checklist Ctf: guides/✅ Checklist CTF.md
+      - 🍃 Mongodb   Practical Guide: guides/🍃 MongoDB - Practical Guide.md
       - 💣 Gobuster   Practical Guide: guides/💣 Gobuster - Practical Guide.md
       - 📂 Smb   Practical Guide: guides/📂 SMB - Practical Guide.md
       - 🖥️ Xfreerdp   Practical Guide: guides/🖥️ xfreerdp - Practical Guide.md
