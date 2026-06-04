@@ -4,8 +4,8 @@ theme:
   name: material
   language: en
   font:
-    text: Fira Code
-    code: Fira Code
+    text: JetBrains Mono
+    code: JetBrains Mono
   palette:
     - scheme: slate
       primary: blue grey
