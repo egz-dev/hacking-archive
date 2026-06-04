@@ -448,9 +448,22 @@
   background: transparent !important;
 }
 
+/* Hide default mkdocs-material attribution */
+.md-footer-meta .md-social,
+.md-footer-meta .md-footer-meta__inner > :not(.md-copyright) {
+  display: none;
+}
+
+/* Center copyright */
+.md-footer-meta__inner {
+  justify-content: center !important;
+}
+
 .md-copyright {
   font-size: 0.85em;
   color: var(--md-default-fg-color--light);
+  text-align: center;
+  margin: 0 auto;
 }
 
 .md-copyright a {
