@@ -241,17 +241,16 @@
 
 /* Bold text with custom highlight color */
 .md-typeset strong {
-  color: #e2b714;
+  color: var(--md-accent-fg-color);
   font-weight: 700;
 }
 
-/* Bold inside admonitions keeps admonition color */
-.md-typeset .admonition strong {
-  color: inherit;
-}
-
-/* Bold inside tables keeps table color */
-.md-typeset table strong {
+/* Bold inside admonitions, tables, code, and links keeps original color */
+.md-typeset .admonition strong,
+.md-typeset table strong,
+.md-typeset code strong,
+.md-typeset pre strong,
+.md-typeset a strong {
   color: inherit;
 }
 
