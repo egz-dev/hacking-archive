@@ -50,6 +50,10 @@ nav:
   - Inicio: index.md
   - Writeups:
       - writeups/index.md
-  - Guías:
-      - guias/index.md
+      - 💥 Explosion: writeups/💥 Explosion.md
+      - 💾 Redeemer: writeups/💾 Redeemer.md
+      - 🦌 Fawn: writeups/🦌 Fawn.md
+      - 🧨 Preignition: writeups/🧨 Preignition.md
+      - 🩰 Dancing: writeups/🩰 Dancing.md
+  - Guías: guias/index.md
 # --nav-auto-end--

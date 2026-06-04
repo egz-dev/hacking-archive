@@ -104,15 +104,21 @@ def generate_nav(writeup_entries: list[str], guia_entries: list[str]) -> str:
 
     if writeup_entries:
         lines.append("  - Writeups:")
+        lines.append("      - writeups/index.md")
         for entry in writeup_entries:
             name = entry.split("/")[-1].replace("-", " ").replace("_", " ").title()
             lines.append(f"      - {name}: {entry}.md")
+    else:
+        lines.append("  - Writeups: writeups/index.md")
 
     if guia_entries:
         lines.append("  - Guías:")
+        lines.append("      - guias/index.md")
         for entry in guia_entries:
             name = entry.split("/")[-1].replace("-", " ").replace("_", " ").title()
             lines.append(f"      - {name}: {entry}.md")
+    else:
+        lines.append("  - Guías: guias/index.md")
 
     return "\n".join(lines) + "\n"
 

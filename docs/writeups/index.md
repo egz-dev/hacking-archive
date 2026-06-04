@@ -1,5 +1,7 @@
 # Writeups - Máquinas HTB
 
-Writeups detallados de máquinas de Hack The Box resueltas.
-
-_Los writeups aparecerán aquí tras la primera sincronización._
+- [💥 Explosion](💥 Explosion.md)
+- [💾 Redeemer](💾 Redeemer.md)
+- [🦌 Fawn](🦌 Fawn.md)
+- [🧨 Preignition](🧨 Preignition.md)
+- [🩰 Dancing](🩰 Dancing.md)
