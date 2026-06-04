@@ -1,0 +1,47 @@
+name: Sincronizar Writeups y Deploy
+
+on:
+  # Permite que el repo de writeups dispare este workflow al hacer push
+  repository_dispatch:
+    types: [writeups-updated]
+
+  # Permite ejecución manual desde la UI de GitHub
+  workflow_dispatch:
+
+  # Opcional: sincronización periódica (cada 6 horas)
+  schedule:
+    - cron: "0 */6 * * *"
+
+jobs:
+  sync-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout del repositorio MkDocs
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: |
+          pip install mkdocs mkdocs-material
+
+      - name: Sincronizar writeups desde repo externo
+        run: python sync_writeups.py
+
+      - name: Construir sitio MkDocs
+        run: mkdocs build
+
+      - name: Desplegar a GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          commit_message: "Deploy: sincronización automática de writeups [skip ci]"

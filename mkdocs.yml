@@ -1,0 +1,55 @@
+site_name: "Baúl de Writeups HTB"
+site_description: "Archivo de writeups de máquinas de Hack The Box"
+repo_url: https://github.com/egz-dev/HTB
+theme:
+  name: material
+  language: es
+  palette:
+    - scheme: slate
+      primary: green
+      accent: light-green
+      toggle:
+        icon: material/brightness-7
+        name: Modo oscuro
+    - scheme: default
+      primary: green
+      accent: light-green
+      toggle:
+        icon: material/brightness-4
+        name: Modo claro
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - toc.follow
+    - search.suggest
+    - search.highlight
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - footnotes
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+
+# --nav-auto-start--
+nav:
+  - Inicio: index.md
+  - Writeups:
+      - writeups/index.md
+  - Guías:
+      - guias/index.md
+# --nav-auto-end--
