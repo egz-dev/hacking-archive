@@ -1,4 +1,4 @@
-# Guías Prácticas
+# Practical Guides
 
 <div class="machine-grid">
 <a class="machine-card" href="✅ Checklist CTF.md">

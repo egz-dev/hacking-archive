@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Sincroniza los writeups de HTB desde el repositorio externo a la estructura de MkDocs.
+Sync HTB writeups from the external repo into the MkDocs structure.
 
-Uso:
+Usage:
     python sync_writeups.py [--repo-url URL] [--work-dir DIR]
 
-El script clona (o actualiza) el repositorio de writeups y copia los archivos
-a la carpeta docs/ para que MkDocs los sirva.
+The script clones (or updates) the writeups repo and copies files
+into the docs/ folder for MkDocs to serve.
 """
 
 import argparse
@@ -21,15 +21,15 @@ REPO_URL = "https://github.com/egz-dev/HTB.git"
 WORK_DIR = Path(".sync_cache")
 DOCS_DIR = Path("docs")
 
-# Mapeo de carpetas del repo origen a docs/
+# Mapping: source repo folders → docs/ folders
 FOLDER_MAP = {
     "machines": "writeups",
-    "documentation": "guias",
+    "documentation": "guides",
 }
 
 
 def run(cmd: list[str], cwd: Path | None = None) -> None:
-    """Ejecuta un comando y aborta si falla."""
+    """Run a command and abort if it fails."""
     print(f"  → {' '.join(cmd)}")
     result = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
     if result.returncode != 0:
@@ -38,7 +38,7 @@ def run(cmd: list[str], cwd: Path | None = None) -> None:
 
 
 def get_default_branch(work_dir: Path) -> str:
-    """Detecta la rama por defecto del repositorio clonado."""
+    """Detect the default branch of the cloned repo."""
     result = subprocess.run(
         ["git", "remote", "show", "origin"],
         cwd=work_dir, capture_output=True, text=True
@@ -51,20 +51,20 @@ def get_default_branch(work_dir: Path) -> str:
 
 
 def clone_or_pull(repo_url: str, work_dir: Path) -> None:
-    """Clona el repositorio si no existe, o hace pull si ya está clonado."""
+    """Clone the repo if it doesn't exist, or pull if already cloned."""
     if (work_dir / ".git").exists():
-        print(f"[*] Actualizando repositorio en {work_dir}...")
+        print(f"[*] Updating repo in {work_dir}...")
         run(["git", "fetch", "origin"], cwd=work_dir)
         branch = get_default_branch(work_dir)
         run(["git", "reset", "--hard", f"origin/{branch}"], cwd=work_dir)
     else:
-        print(f"[*] Clonando {repo_url} en {work_dir}...")
+        print(f"[*] Cloning {repo_url} into {work_dir}...")
         work_dir.parent.mkdir(parents=True, exist_ok=True)
         run(["git", "clone", "--depth", "1", repo_url, str(work_dir)])
 
 def parse_frontmatter(text: str) -> tuple[dict[str, str], int] | None:
-    """Extrae el frontmatter YAML simple (key: value) de un .md.
-    Retorna (props, end_pos) o None si no hay frontmatter."""
+    """Extract simple YAML frontmatter (key: value) from a .md file.
+    Returns (props, end_pos) or None if no frontmatter."""
     match = re.match(r'^---\s*\n(.*?)\n---', text, re.DOTALL)
     if not match:
         return None
@@ -78,7 +78,7 @@ def parse_frontmatter(text: str) -> tuple[dict[str, str], int] | None:
 
 
 def badge_class(key: str, value: str) -> str:
-    """Devuelve la clase CSS para el badge según la clave y valor."""
+    """Return the CSS class for a badge based on key and value."""
     if key == "OS":
         v = value.lower()
         if "windows" in v:
@@ -95,7 +95,7 @@ def badge_class(key: str, value: str) -> str:
 
 
 def inject_properties_card(md_path: Path) -> None:
-    """Lee un .md, extrae su frontmatter, e inserta una barra de propiedades con badges HTML."""
+    """Read a .md, extract its frontmatter, and insert an HTML properties badge bar."""
     text = md_path.read_text()
     result = parse_frontmatter(text)
     if not result:
@@ -104,7 +104,7 @@ def inject_properties_card(md_path: Path) -> None:
 
     parts: list[str] = []
 
-    # IP como código inline
+    # IP as inline code
     if props.get("IP"):
         parts.append(f'<span class="prop-ip">{props["IP"]}</span>')
 
@@ -118,7 +118,7 @@ def inject_properties_card(md_path: Path) -> None:
         cls = badge_class("Level", props["Level"])
         parts.append(f'<span class="prop-badge {cls}">{props["Level"]}</span>')
 
-    # Skills badge (puede tener varias separadas por coma)
+    # Skills badge (can be comma-separated)
     if props.get("Skills"):
         for skill in props["Skills"].split(","):
             skill = skill.strip()
@@ -131,19 +131,19 @@ def inject_properties_card(md_path: Path) -> None:
     badge_bar = f'\n\n<div class="machine-properties">\n  {" ".join(parts)}\n</div>\n'
     new_text = text[:end_of_fm] + badge_bar + text[end_of_fm:]
     md_path.write_text(new_text)
-    print(f"    ↳ Propiedades inyectadas: {', '.join(f'{k}={v}' for k, v in props.items())}")
+    print(f"    ↳ Properties injected: {', '.join(f'{k}={v}' for k, v in props.items())}")
 
 
 def copy_content(src_dir: Path, dst_dir: Path, label: str) -> list[str]:
     """
-    Copia el contenido de src_dir a dst_dir.
-    Retorna la lista de rutas relativas copiadas (sin extensión).
+    Copy content from src_dir to dst_dir.
+    Returns a list of copied relative paths (without extension).
     """
     if not src_dir.exists():
-        print(f"  ⚠ Carpeta '{src_dir}' no encontrada, saltando...")
+        print(f"  ⚠ Folder '{src_dir}' not found, skipping...")
         return []
 
-    # Limpiar destino
+    # Clean destination
     if dst_dir.exists():
         shutil.rmtree(dst_dir)
     dst_dir.mkdir(parents=True, exist_ok=True)
@@ -153,26 +153,26 @@ def copy_content(src_dir: Path, dst_dir: Path, label: str) -> list[str]:
         dest = dst_dir / item.name
         if item.is_dir():
             shutil.copytree(item, dest)
-            # Buscar un .md principal dentro
+            # Find the main .md inside
             for md_file in sorted(dest.rglob("*.md")):
                 rel = md_file.relative_to(DOCS_DIR)
                 entries.append(str(rel.with_suffix("")))
-                break  # solo el primer .md por carpeta
+                break  # only the first .md per folder
         elif item.suffix == ".md":
             shutil.copy2(item, dest)
             inject_properties_card(dest)
             rel = dest.relative_to(DOCS_DIR)
             entries.append(str(rel.with_suffix("")))
 
-    print(f"  ✓ {label}: {len(entries)} elementos copiados")
+    print(f"  ✓ {label}: {len(entries)} items copied")
     return entries
 
 
 def generate_nav(writeup_entries: list[str], guia_entries: list[str]) -> str:
-    """Genera la sección 'nav' del mkdocs.yml con las entradas descubiertas."""
+    """Generate the 'nav' section of mkdocs.yml with the discovered entries."""
     lines = [
         "nav:",
-        '  - Inicio: index.md',
+        '  - Home: index.md',
     ]
 
     if writeup_entries:
@@ -185,41 +185,41 @@ def generate_nav(writeup_entries: list[str], guia_entries: list[str]) -> str:
         lines.append("  - Writeups: writeups/index.md")
 
     if guia_entries:
-        lines.append("  - Guías:")
-        lines.append("      - guias/index.md")
+        lines.append("  - Guides:")
+        lines.append("      - guides/index.md")
         for entry in guia_entries:
             name = entry.split("/")[-1].replace("-", " ").replace("_", " ").title()
             lines.append(f"      - {name}: {entry}.md")
     else:
-        lines.append("  - Guías: guias/index.md")
+        lines.append("  - Guides: guides/index.md")
 
     return "\n".join(lines) + "\n"
 
 
 def update_mkdocs_nav(writeup_entries: list[str], guia_entries: list[str]) -> None:
-    """Actualiza la sección nav en mkdocs.yml con las entradas generadas."""
+    """Update the nav section in mkdocs.yml with the generated entries."""
     mkdocs_path = Path("mkdocs.yml")
     content = mkdocs_path.read_text()
 
-    # Encontrar y reemplazar la sección 'nav:'
+    # Find and replace the 'nav:' section
     nav_start_marker = "# --nav-auto-start--"
     nav_end_marker = "# --nav-auto-end--"
 
     if nav_start_marker in content and nav_end_marker in content:
-        # Reemplazar entre marcadores
+        # Replace between markers
         before = content.split(nav_start_marker)[0]
         after = content.split(nav_end_marker)[1]
         new_nav = generate_nav(writeup_entries, guia_entries)
         new_content = before + nav_start_marker + "\n" + new_nav + nav_end_marker + after
         mkdocs_path.write_text(new_content)
-        print("[*] Nav de mkdocs.yml actualizada")
+        print("[*] mkdocs.yml nav updated")
     else:
-        print("[*] No se encontraron marcadores # --nav-auto-start--/--nav-auto-end-- en mkdocs.yml")
-        print("    La nav se deja como está (usa la configuración estática)")
+        print("[*] Nav markers # --nav-auto-start--/--nav-auto-end-- not found in mkdocs.yml")
+        print("    Keeping existing nav as-is")
 
 
 def create_index(dst_dir: Path, title: str, entries: list[str]) -> None:
-    """Crea un index.md en dst_dir con tarjetas vistosas para cada entrada."""
+    """Create an index.md in dst_dir with nice cards for each entry."""
     index_path = dst_dir / "index.md"
     index_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -230,7 +230,7 @@ def create_index(dst_dir: Path, title: str, entries: list[str]) -> None:
             name = entry.split("/")[-1].replace("-", " ").replace("_", " ").title()
             link = entry.split('/', 1)[1] if '/' in entry else entry
 
-            # Extrar frontmatter del .md original para mostrar badges en la card
+            # Extract frontmatter from the .md to show badges in the card
             md_file = DOCS_DIR / f"{entry}.md"
             props: dict[str, str] = {}
             if md_file.exists():
@@ -239,7 +239,7 @@ def create_index(dst_dir: Path, title: str, entries: list[str]) -> None:
                     props, _ = result
 
             icon = props.get("Icon", "📦")
-            # Usar el emoji del título o el primer emoji del nombre
+            # Use the emoji from the title or first emoji found in the name
             if not icon or icon == "📦":
                 for ch in name:
                     if ord(ch) > 127:
@@ -260,29 +260,29 @@ def create_index(dst_dir: Path, title: str, entries: list[str]) -> None:
             lines.append('</a>')
         lines.append('</div>')
     else:
-        lines.append("> ℹ️ No hay entradas todavía. Cuando añadas guías en la carpeta `documentación/` del repositorio de writeups, aparecerán aquí automáticamente.")
+        lines.append("> ℹ️ No entries yet. When you add guides in the `documentation/` folder of the writeups repo, they will appear here automatically.")
 
     index_path.write_text("\n".join(lines) + "\n")
-    print(f"  ✓ index.md creado en {dst_dir}")
+    print(f"  ✓ index.md created in {dst_dir}")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Sincroniza writeups HTB → MkDocs")
-    parser.add_argument("--repo-url", default=REPO_URL, help="URL del repositorio de writeups")
-    parser.add_argument("--work-dir", default=str(WORK_DIR), help="Directorio de trabajo para el clon")
+    parser = argparse.ArgumentParser(description="Sync HTB writeups → MkDocs")
+    parser.add_argument("--repo-url", default=REPO_URL, help="Writeups repo URL")
+    parser.add_argument("--work-dir", default=str(WORK_DIR), help="Working directory for the clone")
     args = parser.parse_args()
 
     repo_url: str = args.repo_url
     work_dir = Path(args.work_dir)
 
     print("=" * 50)
-    print("  Sincronización de Writeups HTB → MkDocs")
+    print("  HTB Writeups Sync → MkDocs")
     print("=" * 50)
 
-    # 1. Clonar o actualizar
+    # 1. Clone or update
     clone_or_pull(repo_url, work_dir)
 
-    # 2. Copiar contenido
+    # 2. Copy content
     all_writeup_entries: list[str] = []
     all_guia_entries: list[str] = []
 
@@ -293,31 +293,31 @@ def main():
 
         if dst_folder == "writeups":
             all_writeup_entries = entries
-        elif dst_folder == "guias":
+        elif dst_folder == "guides":
             all_guia_entries = entries
 
-    # 3. Copiar assets si existen
+    # 3. Copy assets if they exist
     assets_src = work_dir / "assets"
     assets_dst = DOCS_DIR / "assets"
     if assets_src.exists():
         if assets_dst.exists():
             shutil.rmtree(assets_dst)
         shutil.copytree(assets_src, assets_dst)
-        print(f"  ✓ assets copiados a {assets_dst}")
+        print(f"  ✓ assets copied to {assets_dst}")
     else:
-        print("  ⚠ Carpeta 'assets' no encontrada, saltando...")
+        print("  ⚠ 'assets' folder not found, skipping...")
 
-    # 4. Crear índices
-    create_index(DOCS_DIR / "writeups", "Writeups - Máquinas HTB", all_writeup_entries)
-    create_index(DOCS_DIR / "guias", "Guías Prácticas", all_guia_entries)
+    # 4. Create indexes
+    create_index(DOCS_DIR / "writeups", "HTB Machine Writeups", all_writeup_entries)
+    create_index(DOCS_DIR / "guides", "Practical Guides", all_guia_entries)
 
-    # 5. Actualizar nav
+    # 5. Update nav
     update_mkdocs_nav(all_writeup_entries, all_guia_entries)
 
     print()
-    print("[✓] Sincronización completada.")
+    print("[✓] Sync complete.")
     print(f"    Writeups: {len(all_writeup_entries)}")
-    print(f"    Guías:    {len(all_guia_entries)}")
+    print(f"    Guides:  {len(all_guia_entries)}")
 
 
 if __name__ == "__main__":

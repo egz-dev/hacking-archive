@@ -1,4 +1,4 @@
-# Writeups - Máquinas HTB
+# HTB Machine Writeups
 
 <div class="machine-grid">
 <a class="machine-card" href="💥 Explosion.md">

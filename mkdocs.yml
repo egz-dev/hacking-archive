@@ -1,22 +1,22 @@
-site_name: "Baúl de Writeups HTB"
-site_description: "Archivo de writeups de máquinas de Hack The Box"
+site_name: "Hacking Archive"
+site_description: "Various writeups and guides for Hack The Box machines and challenges."
 repo_url: https://github.com/egz-dev/HTB
 theme:
   name: material
-  language: es
+  language: en
   palette:
     - scheme: slate
       primary: green
       accent: light-green
       toggle:
         icon: material/brightness-7
-        name: Modo oscuro
+        name: Dark mode
     - scheme: default
       primary: green
       accent: light-green
       toggle:
         icon: material/brightness-4
-        name: Modo claro
+        name: Light mode
   features:
     - navigation.instant
     - navigation.tracking
@@ -50,7 +50,7 @@ plugins:
 
 # --nav-auto-start--
 nav:
-  - Inicio: index.md
+  - Home: index.md
   - Writeups:
       - writeups/index.md
       - 💥 Explosion: writeups/💥 Explosion.md
@@ -58,12 +58,12 @@ nav:
       - 🦌 Fawn: writeups/🦌 Fawn.md
       - 🧨 Preignition: writeups/🧨 Preignition.md
       - 🩰 Dancing: writeups/🩰 Dancing.md
-  - Guías:
-      - guias/index.md
-      - ✅ Checklist Ctf: guias/✅ Checklist CTF.md
-      - 💣 Gobuster   Practical Guide: guias/💣 Gobuster - Practical Guide.md
-      - 📂 Smb   Practical Guide: guias/📂 SMB - Practical Guide.md
-      - 🖥️ Xfreerdp   Practical Guide: guias/🖥️ xfreerdp - Practical Guide.md
-      - 🗃️ Ftp   Practical Guide: guias/🗃️ FTP - Practical Guide.md
-      - 🗄️ Redis   Practical Guide: guias/🗄️ Redis - Practical Guide.md
+  - Guides:
+      - guides/index.md
+      - ✅ Checklist Ctf: guides/✅ Checklist CTF.md
+      - 💣 Gobuster   Practical Guide: guides/💣 Gobuster - Practical Guide.md
+      - 📂 Smb   Practical Guide: guides/📂 SMB - Practical Guide.md
+      - 🖥️ Xfreerdp   Practical Guide: guides/🖥️ xfreerdp - Practical Guide.md
+      - 🗃️ Ftp   Practical Guide: guides/🗃️ FTP - Practical Guide.md
+      - 🗄️ Redis   Practical Guide: guides/🗄️ Redis - Practical Guide.md
 # --nav-auto-end--

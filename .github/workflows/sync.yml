@@ -1,14 +1,14 @@
-name: Sincronizar Writeups
+name: Sync Writeups
 
 on:
-  # Permite que el repo de writeups dispare este workflow al hacer push
+  # Triggered by push events in the writeups repo
   repository_dispatch:
     types: [writeups-updated]
 
-  # Permite ejecución manual desde la UI de GitHub
+  # Manual trigger from GitHub UI
   workflow_dispatch:
 
-  # Sincronización periódica (cada 6 horas)
+  # Periodic sync (every 6 hours)
   schedule:
     - cron: "0 */6 * * *"
 
@@ -19,32 +19,32 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout del repositorio MkDocs
+      - name: Checkout MkDocs repo
         uses: actions/checkout@v4
 
-      - name: Configurar Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Instalar dependencias
+      - name: Install dependencies
         run: |
           pip install -r requirements.txt
 
-      - name: Sincronizar writeups desde repo externo
+      - name: Sync writeups from external repo
         run: python sync_writeups.py
 
-      - name: Commit y push de writeups sincronizados
+      - name: Commit and push synced writeups
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
           # Añadir solo los archivos sincronizados (incluye eliminaciones con -A)
-          git add -A docs/writeups/ docs/guias/ docs/assets/ mkdocs.yml 2>/dev/null || true
+          git add -A docs/writeups/ docs/guides/ docs/assets/ mkdocs.yml 2>/dev/null || true
           
           if git diff --staged --quiet; then
-            echo "Sin cambios nuevos, nada que commitear."
+            echo "No new changes, nothing to commit."
           else
-            git commit -m "Sync: writeups actualizados desde egz-dev/HTB"
+            git commit -m "Sync: writeups updated from egz-dev/HTB"
             git push
           fi
