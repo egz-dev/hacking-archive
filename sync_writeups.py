@@ -257,7 +257,7 @@ def create_index(dst_dir: Path, title: str, entries: list[str]) -> None:
             if props.get("Level"):
                 badges_html += f' <span class="prop-badge {badge_class("Level", props["Level"])}">{props["Level"]}</span>'
 
-            lines.append(f'<a class="machine-card" href="{link}.md">')
+            lines.append(f'<a class="machine-card" href="{link}/">')
             lines.append(f'  <span class="card-title">{icon} {plain_name}</span>')
             if badges_html:
                 lines.append(f'  <span class="card-meta">{badges_html}</span>')
