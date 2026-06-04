@@ -9,15 +9,6 @@ theme:
     - scheme: slate
       primary: blue grey
       accent: indigo
-      toggle:
-        icon: material/brightness-7
-        name: Dark mode
-    - scheme: default
-      primary: blue grey
-      accent: indigo
-      toggle:
-        icon: material/brightness-4
-        name: Light mode
   features:
     - navigation.instant
     - navigation.tracking
