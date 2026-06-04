@@ -3,6 +3,11 @@ IP: 10.129.1.12
 OS: Windows
 Level: Very Easy
 ---
+
+| IP | OS | Level |
+|---|---|---|
+| 10.129.1.12 | Windows | Very Easy |
+
 # 🩰 Dancing
 
 Dancing is a **Very Easy** Windows box that demonstrates how a misconfigured SMB server allowing anonymous access to network shares can lead to information disclosure.

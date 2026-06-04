@@ -11,6 +11,7 @@ a la carpeta docs/ para que MkDocs los sirva.
 
 import argparse
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -61,6 +62,50 @@ def clone_or_pull(repo_url: str, work_dir: Path) -> None:
         work_dir.parent.mkdir(parents=True, exist_ok=True)
         run(["git", "clone", "--depth", "1", repo_url, str(work_dir)])
 
+def parse_frontmatter(text: str) -> tuple[dict[str, str], int] | None:
+    """Extrae el frontmatter YAML simple (key: value) de un .md.
+    Retorna (props, end_pos) o None si no hay frontmatter."""
+    match = re.match(r'^---\s*\n(.*?)\n---', text, re.DOTALL)
+    if not match:
+        return None
+    props: dict[str, str] = {}
+    for line in match.group(1).splitlines():
+        line = line.strip()
+        if ':' in line:
+            key, _, value = line.partition(':')
+            props[key.strip()] = value.strip()
+    return props, match.end()
+
+
+def inject_properties_table(md_path: Path) -> None:
+    """Lee un .md, extrae su frontmatter, e inserta una tabla de propiedades."""
+    text = md_path.read_text()
+    result = parse_frontmatter(text)
+    if not result:
+        return
+    props, end_of_fm = result
+
+    # Construir tabla Markdown con las propiedades
+    labels: list[str] = []
+    values: list[str] = []
+    for key in ("IP", "OS", "Level", "Skills"):
+        if key in props and props[key]:
+            labels.append(key)
+            values.append(props[key])
+
+    if not labels:
+        return
+
+    header = "| " + " | ".join(labels) + " |"
+    sep = "|" + "|".join("---" for _ in labels) + "|"
+    row = "| " + " | ".join(values) + " |"
+    table = f"\n\n{header}\n{sep}\n{row}\n"
+
+    # Insertar la tabla justo después del frontmatter
+    new_text = text[:end_of_fm] + table + text[end_of_fm:]
+    md_path.write_text(new_text)
+    print(f"    ↳ Propiedades inyectadas: {', '.join(f'{k}={v}' for k, v in props.items())}")
+
 
 def copy_content(src_dir: Path, dst_dir: Path, label: str) -> list[str]:
     """
@@ -88,6 +133,7 @@ def copy_content(src_dir: Path, dst_dir: Path, label: str) -> list[str]:
                 break  # solo el primer .md por carpeta
         elif item.suffix == ".md":
             shutil.copy2(item, dest)
+            inject_properties_table(dest)
             rel = dest.relative_to(DOCS_DIR)
             entries.append(str(rel.with_suffix("")))
 

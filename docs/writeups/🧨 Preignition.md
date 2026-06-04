@@ -3,6 +3,11 @@ IP:
 OS: Linux
 Level: Very Easy
 ---
+
+| OS | Level |
+|---|---|
+| Linux | Very Easy |
+
 # 🧨 Preignition
 
 Preignition is a **Very Easy** Linux box that demonstrates how improper directory brute-forcing combined with default credentials on a hidden admin panel can grant access to a web application — no exploit required.

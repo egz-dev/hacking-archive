@@ -3,6 +3,11 @@ IP: 10.129.136.187
 OS: Linux
 Level: Very Easy
 ---
+
+| IP | OS | Level |
+|---|---|---|
+| 10.129.136.187 | Linux | Very Easy |
+
 # 💾 Redeemer
 
 Redeemer is a **Very Easy** Linux box that demonstrates how an unauthenticated Redis server exposes its entire keyspace, allowing direct data exfiltration without any exploit needed.
