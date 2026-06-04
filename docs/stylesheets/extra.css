@@ -442,6 +442,32 @@
   pointer-events: none;
 }
 
+/* ========== FOOTER ========== */
+.md-footer {
+  background: var(--md-code-bg-color) !important;
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.md-footer-meta {
+  background: transparent !important;
+}
+
+.md-copyright {
+  font-size: 0.85em;
+  color: var(--md-default-fg-color--light);
+}
+
+.md-copyright a {
+  color: var(--md-typeset-color) !important;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.md-copyright a:hover {
+  color: var(--md-accent-fg-color) !important;
+  text-decoration: none;
+}
+
 /* ========== ANIMATIONS ========== */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }

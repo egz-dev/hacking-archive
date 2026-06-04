@@ -48,6 +48,10 @@ extra_css:
 plugins:
   - search
 
+copyright: >
+  Made with ❤️ by <a href="https://github.com/egz-dev" target="_blank" rel="noopener">egz-dev</a> — 
+  <a href="https://edugarcia.dev" target="_blank" rel="noopener">edugarcia.dev</a>
+
 # --nav-auto-start--
 nav:
   - Home: index.md
@@ -60,10 +64,10 @@ nav:
       - 🩰 Dancing: writeups/🩰 Dancing.md
   - Guides:
       - guides/index.md
-      - ✅ Checklist Ctf: guides/✅ Checklist CTF.md
-      - 💣 Gobuster   Practical Guide: guides/💣 Gobuster - Practical Guide.md
-      - 📂 Smb   Practical Guide: guides/📂 SMB - Practical Guide.md
-      - 🖥️ Xfreerdp   Practical Guide: guides/🖥️ xfreerdp - Practical Guide.md
-      - 🗃️ Ftp   Practical Guide: guides/🗃️ FTP - Practical Guide.md
-      - 🗄️ Redis   Practical Guide: guides/🗄️ Redis - Practical Guide.md
+      - ✅ Checklist CTF: guides/✅ Checklist CTF.md
+      - 💣 Gobuster - Practical Guide: guides/💣 Gobuster - Practical Guide.md
+      - 📂 SMB - Practical Guide: guides/📂 SMB - Practical Guide.md
+      - 🖥️ Xfreerdp - Practical Guide: guides/🖥️ xfreerdp - Practical Guide.md
+      - 🗃️ FTP - Practical Guide: guides/🗃️ FTP - Practical Guide.md
+      - 🗄️ Redis - Practical Guide: guides/🗄️ Redis - Practical Guide.md
 # --nav-auto-end--
