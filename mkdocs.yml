@@ -3,6 +3,7 @@ site_description: "Various writeups and guides for Hack The Box machines and cha
 theme:
   name: material
   language: en
+  custom_dir: overrides
   font:
     code: Fira Code
   palette:
