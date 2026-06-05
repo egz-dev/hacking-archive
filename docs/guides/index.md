@@ -7,6 +7,9 @@
 <a class="machine-card" href="🍃 MongoDB - Practical Guide/">
   <span class="card-title">🍃 Mongodb   Practical Guide</span>
 </a>
+<a class="machine-card" href="💉 SQL Injection - Practical Guide/">
+  <span class="card-title">💉 Sql Injection   Practical Guide</span>
+</a>
 <a class="machine-card" href="💣 Gobuster - Practical Guide/">
   <span class="card-title">💣 Gobuster   Practical Guide</span>
 </a>

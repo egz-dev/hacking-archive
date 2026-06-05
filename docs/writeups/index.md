@@ -13,6 +13,10 @@
   <span class="card-title">💾 Redeemer</span>
   <span class="card-meta"> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span></span>
 </a>
+<a class="machine-card" href="📅 Appointment/">
+  <span class="card-title">📅 Appointment</span>
+  <span class="card-meta"> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span></span>
+</a>
 <a class="machine-card" href="🔄 Synced/">
   <span class="card-title">🔄 Synced</span>
   <span class="card-meta"> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span></span>

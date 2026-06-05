@@ -54,6 +54,7 @@ nav:
           - 👹 Mongod: writeups/👹 Mongod.md
           - 💥 Explosion: writeups/💥 Explosion.md
           - 💾 Redeemer: writeups/💾 Redeemer.md
+          - 📅 Appointment: writeups/📅 Appointment.md
           - 🔄 Synced: writeups/🔄 Synced.md
           - 🦌 Fawn: writeups/🦌 Fawn.md
           - 🧨 Preignition: writeups/🧨 Preignition.md
@@ -62,6 +63,7 @@ nav:
       - guides/index.md
       - ✅ Checklist Ctf: guides/✅ Checklist CTF.md
       - 🍃 Mongodb   Practical Guide: guides/🍃 MongoDB - Practical Guide.md
+      - 💉 Sql Injection   Practical Guide: guides/💉 SQL Injection - Practical Guide.md
       - 💣 Gobuster   Practical Guide: guides/💣 Gobuster - Practical Guide.md
       - 📂 Smb   Practical Guide: guides/📂 SMB - Practical Guide.md
       - 🔄 Rsync   Practical Guide: guides/🔄 Rsync - Practical Guide.md
