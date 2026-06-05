@@ -54,6 +54,7 @@ nav:
           - 👹 Mongod: writeups/👹 Mongod.md
           - 💥 Explosion: writeups/💥 Explosion.md
           - 💾 Redeemer: writeups/💾 Redeemer.md
+          - 🔄 Synced: writeups/🔄 Synced.md
           - 🦌 Fawn: writeups/🦌 Fawn.md
           - 🧨 Preignition: writeups/🧨 Preignition.md
           - 🩰 Dancing: writeups/🩰 Dancing.md
@@ -63,7 +64,9 @@ nav:
       - 🍃 Mongodb   Practical Guide: guides/🍃 MongoDB - Practical Guide.md
       - 💣 Gobuster   Practical Guide: guides/💣 Gobuster - Practical Guide.md
       - 📂 Smb   Practical Guide: guides/📂 SMB - Practical Guide.md
+      - 🔄 Rsync   Practical Guide: guides/🔄 Rsync - Practical Guide.md
       - 🖥️ Xfreerdp   Practical Guide: guides/🖥️ xfreerdp - Practical Guide.md
       - 🗃️ Ftp   Practical Guide: guides/🗃️ FTP - Practical Guide.md
       - 🗄️ Redis   Practical Guide: guides/🗄️ Redis - Practical Guide.md
+      - 🗺️ Nmap   Practical Guide: guides/🗺️ Nmap - Practical Guide.md
 # --nav-auto-end--
