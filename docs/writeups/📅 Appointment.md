@@ -1,12 +1,11 @@
 ---
-IP: 10.129.12.50
 OS: Linux
 Level: Very Easy
 Skills: SQL Injection, Gobuster
 ---
 # 📅 Appointment
 <div class="machine-properties">
-  <span class="prop-ip">10.129.12.50</span> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">SQL Injection</span> <span class="prop-badge skills">Gobuster</span>
+  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">SQL Injection</span> <span class="prop-badge skills">Gobuster</span>
 </div>
 
 

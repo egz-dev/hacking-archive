@@ -1,12 +1,11 @@
 ---
-IP: 10.129.11.69
 OS: Linux
 Level: Very Easy
-Skills:
+Skills: MongoDB, NoSQL, Database Enumeration
 ---
 # 👹 Mongod
 <div class="machine-properties">
-  <span class="prop-ip">10.129.11.69</span> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span>
+  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">MongoDB</span> <span class="prop-badge skills">NoSQL</span> <span class="prop-badge skills">Database Enumeration</span>
 </div>
 
 

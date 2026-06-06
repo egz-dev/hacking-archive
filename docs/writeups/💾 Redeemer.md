@@ -1,12 +1,11 @@
 ---
-IP: 10.129.136.187
 OS: Linux
 Level: Very Easy
-Skills:
+Skills: Redis, Database Enumeration
 ---
 # 💾 Redeemer
 <div class="machine-properties">
-  <span class="prop-ip">10.129.136.187</span> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span>
+  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">Redis</span> <span class="prop-badge skills">Database Enumeration</span>
 </div>
 
 

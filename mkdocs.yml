@@ -51,6 +51,8 @@ nav:
   - Writeups:
       - writeups/index.md
       - Very Easy:
+          - 🐊 Crocodile: writeups/🐊 Crocodile.md
+          - 🐬 Sequel: writeups/🐬 Sequel.md
           - 👹 Mongod: writeups/👹 Mongod.md
           - 💥 Explosion: writeups/💥 Explosion.md
           - 💾 Redeemer: writeups/💾 Redeemer.md
@@ -62,13 +64,14 @@ nav:
   - Guides:
       - guides/index.md
       - ✅ Checklist Ctf: guides/✅ Checklist CTF.md
-      - 🍃 Mongodb   Practical Guide: guides/🍃 MongoDB - Practical Guide.md
-      - 💉 Sql Injection   Practical Guide: guides/💉 SQL Injection - Practical Guide.md
-      - 💣 Gobuster   Practical Guide: guides/💣 Gobuster - Practical Guide.md
-      - 📂 Smb   Practical Guide: guides/📂 SMB - Practical Guide.md
-      - 🔄 Rsync   Practical Guide: guides/🔄 Rsync - Practical Guide.md
-      - 🖥️ Xfreerdp   Practical Guide: guides/🖥️ xfreerdp - Practical Guide.md
-      - 🗃️ Ftp   Practical Guide: guides/🗃️ FTP - Practical Guide.md
-      - 🗄️ Redis   Practical Guide: guides/🗄️ Redis - Practical Guide.md
-      - 🗺️ Nmap   Practical Guide: guides/🗺️ Nmap - Practical Guide.md
+      - 🍃 Mongodb: guides/🍃 MongoDB.md
+      - 🐬 Mysql: guides/🐬 MySQL.md
+      - 💉 Sql Injection: guides/💉 SQL Injection.md
+      - 💣 Gobuster: guides/💣 Gobuster.md
+      - 📂 Smb: guides/📂 SMB.md
+      - 🔄 Rsync: guides/🔄 Rsync.md
+      - 🖥️ Xfreerdp: guides/🖥️ xfreerdp.md
+      - 🗃️ Ftp: guides/🗃️ FTP.md
+      - 🗄️ Redis: guides/🗄️ Redis.md
+      - 🗺️ Nmap: guides/🗺️ Nmap.md
 # --nav-auto-end--

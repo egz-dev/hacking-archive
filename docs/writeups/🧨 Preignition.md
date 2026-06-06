@@ -1,12 +1,11 @@
 ---
-IP: 10.129.10.187
 OS: Linux
 Level: Very Easy
-Skills:
+Skills: Gobuster, Default Credentials, Web Enumeration
 ---
 # 🧨 Preignition
 <div class="machine-properties">
-  <span class="prop-ip">10.129.10.187</span> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span>
+  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">Gobuster</span> <span class="prop-badge skills">Default Credentials</span> <span class="prop-badge skills">Web Enumeration</span>
 </div>
 
 

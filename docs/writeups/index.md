@@ -1,6 +1,14 @@
 # HTB Machine Writeups
 
 <div class="machine-grid">
+<a class="machine-card" href="🐊 Crocodile/">
+  <span class="card-title">🐊 Crocodile</span>
+  <span class="card-meta"> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span></span>
+</a>
+<a class="machine-card" href="🐬 Sequel/">
+  <span class="card-title">🐬 Sequel</span>
+  <span class="card-meta"> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span></span>
+</a>
 <a class="machine-card" href="👹 Mongod/">
   <span class="card-title">👹 Mongod</span>
   <span class="card-meta"> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span></span>

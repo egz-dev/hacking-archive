@@ -4,31 +4,34 @@
 <a class="machine-card" href="✅ Checklist CTF/">
   <span class="card-title">✅ Checklist Ctf</span>
 </a>
-<a class="machine-card" href="🍃 MongoDB - Practical Guide/">
-  <span class="card-title">🍃 Mongodb   Practical Guide</span>
+<a class="machine-card" href="🍃 MongoDB/">
+  <span class="card-title">🍃 Mongodb</span>
 </a>
-<a class="machine-card" href="💉 SQL Injection - Practical Guide/">
-  <span class="card-title">💉 Sql Injection   Practical Guide</span>
+<a class="machine-card" href="🐬 MySQL/">
+  <span class="card-title">🐬 Mysql</span>
 </a>
-<a class="machine-card" href="💣 Gobuster - Practical Guide/">
-  <span class="card-title">💣 Gobuster   Practical Guide</span>
+<a class="machine-card" href="💉 SQL Injection/">
+  <span class="card-title">💉 Sql Injection</span>
 </a>
-<a class="machine-card" href="📂 SMB - Practical Guide/">
-  <span class="card-title">📂 Smb   Practical Guide</span>
+<a class="machine-card" href="💣 Gobuster/">
+  <span class="card-title">💣 Gobuster</span>
 </a>
-<a class="machine-card" href="🔄 Rsync - Practical Guide/">
-  <span class="card-title">🔄 Rsync   Practical Guide</span>
+<a class="machine-card" href="📂 SMB/">
+  <span class="card-title">📂 Smb</span>
 </a>
-<a class="machine-card" href="🖥️ xfreerdp - Practical Guide/">
-  <span class="card-title">🖥 ️ Xfreerdp   Practical Guide</span>
+<a class="machine-card" href="🔄 Rsync/">
+  <span class="card-title">🔄 Rsync</span>
 </a>
-<a class="machine-card" href="🗃️ FTP - Practical Guide/">
-  <span class="card-title">🗃 ️ Ftp   Practical Guide</span>
+<a class="machine-card" href="🖥️ xfreerdp/">
+  <span class="card-title">🖥 ️ Xfreerdp</span>
 </a>
-<a class="machine-card" href="🗄️ Redis - Practical Guide/">
-  <span class="card-title">🗄 ️ Redis   Practical Guide</span>
+<a class="machine-card" href="🗃️ FTP/">
+  <span class="card-title">🗃 ️ Ftp</span>
 </a>
-<a class="machine-card" href="🗺️ Nmap - Practical Guide/">
-  <span class="card-title">🗺 ️ Nmap   Practical Guide</span>
+<a class="machine-card" href="🗄️ Redis/">
+  <span class="card-title">🗄 ️ Redis</span>
+</a>
+<a class="machine-card" href="🗺️ Nmap/">
+  <span class="card-title">🗺 ️ Nmap</span>
 </a>
 </div>

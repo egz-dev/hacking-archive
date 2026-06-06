@@ -1,12 +1,11 @@
 ---
-IP: 10.129.1.12
 OS: Windows
 Level: Very Easy
-Skills:
+Skills: SMB, Null Session, Anonymous Access
 ---
 # 🩰 Dancing
 <div class="machine-properties">
-  <span class="prop-ip">10.129.1.12</span> <span class="prop-badge windows">Windows</span> <span class="prop-badge very-easy">Very Easy</span>
+  <span class="prop-badge windows">Windows</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">SMB</span> <span class="prop-badge skills">Null Session</span> <span class="prop-badge skills">Anonymous Access</span>
 </div>
 
 

@@ -1,12 +1,11 @@
 ---
-IP: 10.129.21.178
 OS: Linux
 Level: Very Easy
-Skills:
+Skills: FTP, Anonymous Access
 ---
 # 🦌 Fawn
 <div class="machine-properties">
-  <span class="prop-ip">10.129.21.178</span> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span>
+  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">FTP</span> <span class="prop-badge skills">Anonymous Access</span>
 </div>
 
 

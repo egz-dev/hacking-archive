@@ -1,12 +1,11 @@
 ---
-IP: 10.129.10.7
 OS: Windows
 Level: Very Easy
-Skills:
+Skills: RDP, xfreerdp, Null Session
 ---
 # 💥 Explosion
 <div class="machine-properties">
-  <span class="prop-ip">10.129.10.7</span> <span class="prop-badge windows">Windows</span> <span class="prop-badge very-easy">Very Easy</span>
+  <span class="prop-badge windows">Windows</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">RDP</span> <span class="prop-badge skills">xfreerdp</span> <span class="prop-badge skills">Null Session</span>
 </div>
 
 
