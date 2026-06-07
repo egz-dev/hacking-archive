@@ -33,6 +33,10 @@
   <span class="card-title">🦌 Fawn</span>
   <span class="card-meta"> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span></span>
 </a>
+<a class="machine-card" href="🧑‍🚒 Responder/">
+  <span class="card-title">🧑 ‍🚒 Responder</span>
+  <span class="card-meta"> <span class="prop-badge windows">Windows</span> <span class="prop-badge very-easy">Very Easy</span></span>
+</a>
 <a class="machine-card" href="🧨 Preignition/">
   <span class="card-title">🧨 Preignition</span>
   <span class="card-meta"> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span></span>

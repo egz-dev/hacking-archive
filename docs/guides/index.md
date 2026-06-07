@@ -10,6 +10,9 @@
 <a class="machine-card" href="🐬 MySQL/">
   <span class="card-title">🐬 Mysql</span>
 </a>
+<a class="machine-card" href="💉 LFI & RFI/">
+  <span class="card-title">💉 Lfi & Rfi</span>
+</a>
 <a class="machine-card" href="💉 SQL Injection/">
   <span class="card-title">💉 Sql Injection</span>
 </a>
@@ -21,6 +24,15 @@
 </a>
 <a class="machine-card" href="🔄 Rsync/">
   <span class="card-title">🔄 Rsync</span>
+</a>
+<a class="machine-card" href="🔐 NTLM/">
+  <span class="card-title">🔐 Ntlm</span>
+</a>
+<a class="machine-card" href="🔧 John the Ripper/">
+  <span class="card-title">🔧 John The Ripper</span>
+</a>
+<a class="machine-card" href="🖥️ WinRM/">
+  <span class="card-title">🖥 ️ Winrm</span>
 </a>
 <a class="machine-card" href="🖥️ xfreerdp/">
   <span class="card-title">🖥 ️ Xfreerdp</span>

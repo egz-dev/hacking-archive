@@ -59,6 +59,7 @@ nav:
           - 📅 Appointment: writeups/📅 Appointment.md
           - 🔄 Synced: writeups/🔄 Synced.md
           - 🦌 Fawn: writeups/🦌 Fawn.md
+          - 🧑‍🚒 Responder: writeups/🧑‍🚒 Responder.md
           - 🧨 Preignition: writeups/🧨 Preignition.md
           - 🩰 Dancing: writeups/🩰 Dancing.md
   - Guides:
@@ -66,10 +67,14 @@ nav:
       - ✅ Checklist Ctf: guides/✅ Checklist CTF.md
       - 🍃 Mongodb: guides/🍃 MongoDB.md
       - 🐬 Mysql: guides/🐬 MySQL.md
+      - 💉 Lfi & Rfi: guides/💉 LFI & RFI.md
       - 💉 Sql Injection: guides/💉 SQL Injection.md
       - 💣 Gobuster: guides/💣 Gobuster.md
       - 📂 Smb: guides/📂 SMB.md
       - 🔄 Rsync: guides/🔄 Rsync.md
+      - 🔐 Ntlm: guides/🔐 NTLM.md
+      - 🔧 John The Ripper: guides/🔧 John the Ripper.md
+      - 🖥️ Winrm: guides/🖥️ WinRM.md
       - 🖥️ Xfreerdp: guides/🖥️ xfreerdp.md
       - 🗃️ Ftp: guides/🗃️ FTP.md
       - 🗄️ Redis: guides/🗄️ Redis.md
