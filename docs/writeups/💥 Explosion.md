@@ -1,11 +1,12 @@
 ---
 OS: Windows
 Level: Very Easy
-Skills: RDP, xfreerdp, Null Session
+Skills: xfreerdp
+tags: [windows, rdp]
 ---
 # 💥 Explosion
 <div class="machine-properties">
-  <span class="prop-badge windows">Windows</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">RDP</span> <span class="prop-badge skills">xfreerdp</span> <span class="prop-badge skills">Null Session</span>
+  <span class="prop-badge windows">Windows</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">xfreerdp</span>
 </div>
 
 
@@ -102,4 +103,10 @@ The connection succeeds — the Administrator account has **no password set**, g
 - **`xfreerdp /cert-ignore`** is essential in CTF environments where Windows hosts use self-signed certificates
 - The flag is on the Administrator's desktop — simply open the file once the RDP session is established
 - No privilege escalation was needed — Administrator with a blank password is the root/user privilege all in one
+
+## 🔗 Related
+
+- [[🖥️ xfreerdp]] — RDP client & pass-the-hash
+- [[🖥️ WinRM]] — Windows Remote Management shell
+- [[🩰 Dancing]] — Another Windows box with SMB + WinRM
 

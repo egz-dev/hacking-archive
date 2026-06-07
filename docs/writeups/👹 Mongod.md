@@ -1,11 +1,12 @@
 ---
 OS: Linux
 Level: Very Easy
-Skills: MongoDB, NoSQL, Database Enumeration
+Skills: MongoDB
+tags: [linux, database, mongodb]
 ---
 # 👹 Mongod
 <div class="machine-properties">
-  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">MongoDB</span> <span class="prop-badge skills">NoSQL</span> <span class="prop-badge skills">Database Enumeration</span>
+  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">MongoDB</span>
 </div>
 
 
@@ -153,3 +154,9 @@ This iterates over every database and every collection, printing all documents a
 - **SSH on port 22 was a rabbit hole** — no credentials were found in the database that could have been reused for SSH access; the flag came entirely from MongoDB
 - **Nmap can help confirm your findings** — `nmap --script mongodb-databases -p27017 <IP>` dumps all database names without even connecting interactively
 - No privilege escalation was needed — anonymous MongoDB access exposed the flag directly with no further exploitation required
+
+## 🔗 Related
+
+- [[🍃 MongoDB]] — MongoDB enumeration & NoSQL injection
+- [[💾 Redeemer]] — Another database enumeration box
+- [[🐬 Sequel]] — MySQL database enumeration

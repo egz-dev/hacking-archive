@@ -1,9 +1,6 @@
 # Practical Guides
 
 <div class="machine-grid">
-<a class="machine-card" href="✅ Checklist CTF/">
-  <span class="card-title">✅ Checklist Ctf</span>
-</a>
 <a class="machine-card" href="🍃 MongoDB/">
   <span class="card-title">🍃 Mongodb</span>
 </a>

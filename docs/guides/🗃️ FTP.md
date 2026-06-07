@@ -1,4 +1,8 @@
-> **FTP** transfers files over TCP on two channels: **control** (port 21) and **data** (port 20 or negotiated). This guide focuses on what you actually need for HTB boxes and CTFs.
+---
+tags: [ftp]
+---
+
+> **FTP** transfiere archivos sobre TCP en dos canales: **control** (puerto 21) y **datos** (puerto 20 o negociado). Esta guía cubre lo que hemos practicado.
 
 ---
 
@@ -7,153 +11,137 @@
 ```bash
 $ ftp 10.129.1.10
 Name: anonymous
-Password: <any or press Enter>
+Password: <cualquier cosa o Enter>
 ftp> ls
 ftp> get flag.txt
 ftp> quit
 ```
 
-**Try toggling passive mode if the server rejects your data connection:**
+**Prueba toggling passive mode si el servidor rechaza tu data connection:**
 ```bash
 ftp> passive
 ```
-*(Most firewalls require passive mode — if you get a `425 Can't open data connection`, toggle with `passive`.)*
 
 ---
 
-## Client Commands (what you type)
+## Comandos esenciales del cliente
 
-| Command | What it does |
-| :------ | :----------- |
-| `open <host>` | Connect to an FTP server |
-| `ls` / `dir` | List files (`ls -la` works too) |
-| `cd <path>` | Change directory |
-| `cdup` | Go to parent directory |
-| `pwd` | Show current directory |
-| `get <file>` | Download a file |
-| `get <remote> <local>` | Download and rename locally |
-| `put <file>` | Upload a file |
-| `mget *.txt` | Download multiple files |
-| `mput *.txt` | Upload multiple files |
-| `reget <file>` | Resume interrupted download |
-| `rename <old> <new>` | Rename a file |
-| `delete <file>` | Delete a file |
-| `mkdir <dir>` / `rmdir <dir>` | Create / remove directory |
-| `ascii` / `binary` | Switch transfer mode (text / binary) |
+| Comando | Qué hace |
+| :------ | :------ |
+| `open <host>` | Conectar a un servidor FTP |
+| `ls` / `dir` | Listar archivos |
+| `cd <path>` | Cambiar de directorio |
+| `pwd` | Mostrar directorio actual |
+| `get <file>` | Descargar un archivo |
+| `mget *.txt` | Descargar múltiples archivos |
 | `passive` | Toggle passive mode on/off |
-| `status` | Show connection state |
-| `verbose` | Toggle verbose output |
-| `hash` | Show progress `#` during transfers |
-| `debug` | Toggle debug mode |
-| `prompt` | Toggle interactive prompts (for mget/mput) |
-| `help` | List available commands |
-| `quit` / `bye` | Disconnect |
+| `binary` | Cambiar a modo binario |
+| `quit` / `bye` | Desconectar |
 
-### ✅ Before starting — essential checks
-```bash
-$ nmap -sCV -p21 10.129.1.10
-# Look for "Anonymous FTP login allowed" in the output
+---
+
+## Anonymous FTP → Cadena de Credential Reuse
+
+Anonymous FTP suele ser el **primer paso** en una cadena de ataque multi-servicio. Cuando encuentras archivos legibles, prueba inmediatamente las credenciales descubiertas contra todos los demás servicios (SSH, paneles web, SMB, WinRM).
+
+### Cadena clásica (de HTB Crocodile)
+
+```
+Anonymous FTP → descargar listas user/password → Gobuster encuentra login oculto → credential reuse → admin panel
 ```
 
----
+**Paso 1 — Descargar todo del FTP anónimo:**
+```bash
+$ ftp 10.129.1.15
+Name: anonymous
+Password: <Enter>
+ftp> passive
+ftp> ls
+-rw-r--r--    1 ftp      ftp            33 Jun 08  2021 allowed.userlist
+-rw-r--r--    1 ftp      ftp            62 Apr 20  2021 allowed.userlist.passwd
+ftp> get allowed.userlist
+ftp> get allowed.userlist.passwd
+ftp> quit
+```
 
-## Protocol Commands (what goes over the wire)
+**Paso 2 — Emparejar credenciales (línea por línea):**
+```bash
+$ cat allowed.userlist
+aron
+pwnmeow
+egotisticalsw
+admin
 
-Client commands are just aliases. Under the hood, the client sends these:
+$ cat allowed.userlist.passwd
+root
+Supersecretpassword1
+@BaASD&9032123sADS
+rKXM59ESxesUFHAd
 
-| Command | Purpose |
-| :------ | :------ |
-| `USER anonymous` | Login without credentials |
-| `PASS <pass>` | Send password |
-| `LIST` / `NLST` | List files (detailed / names only) |
-| `RETR <file>` | Download (`get` → `RETR`) |
-| `STOR <file>` | Upload (`put` → `STOR`) |
-| `PASV` | Request passive mode |
-| `PORT a,b,c,d,p1,p2` | Request active mode |
-| `SIZE <file>` | Get file size |
-| `MDTM <file>` | Get file modification time |
-| `REST <offset>` | Resume transfer at byte offset |
-| `SYST` | Show server OS |
-| `FEAT` | List server features/extensions |
-| `SITE CHMOD 755 file` | Set permissions (vsftpd) |
-| `QUIT` | Close connection |
+# Línea 4 users[4] + passwords[4] → admin:rKXM59ESxesUFHAd
+```
+
+**Paso 3 — Probar contra cada otro servicio:**
+```bash
+# Web login form (el vector real en Crocodile)
+curl -d 'user=admin&pass=rKXM59ESxesUFHAd' http://10.129.1.15/login.php -L -v
+
+# SSH
+ssh admin@10.129.1.15
+
+# SMB
+smbclient -L 10.129.1.15 -U 'admin%rKXM59ESxesUFHAd'
+
+# WinRM (si puerto 5985 está abierto)
+evil-winrm -i 10.129.1.15 -u admin -p 'rKXM59ESxesUFHAd'
+```
+
+> 💡 **Key insight:** Archivos llamados `allowed.userlist` y `allowed.userlist.passwd` en el root de FTP son una señal clara de credential reuse. Siempre descarga **ambos** archivos juntos y prueba cada par username/password.
 
 ---
 
 ## Useful Nmap Scripts
 
 ```bash
-# Check anonymous access + list files
+# Verificar acceso anónimo + listar archivos
 nmap --script ftp-anon -p21 10.129.1.10
 
-# Brute force credentials
-nmap --script ftp-brute -p21 10.129.1.10
-
-# Check vsftpd backdoor (exploit)
-nmap --script ftp-vsftpd-backdoor -p21 10.129.1.10
-
-# Enumerate server capabilities
-nmap --script ftp-syst -p21 10.129.1.10
+# Service + version detection
+nmap -sV -p21 10.129.1.10
 ```
-
----
-
-## Response Codes — The Ones You'll Actually See
-
-| Code | Meaning |
-| :--- | :------ |
-| **220** | Service ready |
-| **227** | Entering Passive Mode (got IP:port) |
-| **230** | Login successful ✅ |
-| **331** | Username OK, need password |
-| **425** | Can't open data connection (try `passive`) |
-| **426** | Connection closed / transfer aborted |
-| **500** | Command not recognized |
-| **530** | Not logged in |
-| **550** | File unavailable (doesn't exist / no permission) |
 
 ---
 
 ## vsftpd Notes
 
-- **vsftpd** — "Very Secure FTP Daemon", very common on Linux
-- Default config allows anonymous access if `anonymous_enable=YES` in `/etc/vsftpd.conf`
-- vsftpd 2.3.4 had a **backdoor** (port 6200) — triggered by username ending in `:)`
-- Check version with: `nmap -sV -p21 10.129.1.10`
+- **vsftpd** — "Very Secure FTP Daemon", muy común en Linux
+- El acceso anónimo depende de `anonymous_enable=YES` en `/etc/vsftpd.conf`
+- Lo vimos en: **Fawn** (flag directa en root), **Crocodile** (listas user/password → web login)
 
 ---
 
-## Automation with cURL
+## Response Codes — Los que verás
 
-```bash
-# Download (supports FTP://)
-curl ftp://10.129.1.10/flag.txt --user anonymous: -o flag.txt
-
-# Upload
-curl ftp://10.129.1.10/ --user user:pass -T local.txt
-
-# List directory
-curl ftp://10.129.1.10/ --user anonymous:
-```
-
-## Automation with wget
-
-```bash
-wget -m ftp://anonymous:@10.129.1.10/   # Mirror entire FTP site
-```
+| Code | Significado |
+| :--- | :---------- |
+| **220** | Servicio listo |
+| **227** | Entrando en Passive Mode |
+| **230** | Login exitoso ✅ |
+| **331** | Username OK, necesita password |
+| **425** | No se puede abrir data connection (prueba `passive`) |
+| **530** | Not logged in |
 
 ---
 
-## One-liner — Anonymous FTP Recon
+## 🔗 Related
 
-```bash
-curl -s ftp://10.129.1.10/ --user anonymous: | awk '{print $NF}'
-```
+**Machines:** [[🦌 Fawn]], [[🐊 Crocodile]]
+
+**Guides:** [[💣 Gobuster]], [[🐬 MySQL]]
 
 ---
 
 ## References
 
 - [RFC 959](https://tools.ietf.org/html/rfc959) — FTP Standard
-- [IANA FTP Commands](https://www.iana.org/assignments/ftp-commands-extensions/ftp-commands-extensions.xhtml)
 - [vsftpd](https://security.appspot.com/vsftpd.html)

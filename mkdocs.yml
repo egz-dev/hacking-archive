@@ -64,7 +64,6 @@ nav:
           - 🩰 Dancing: writeups/🩰 Dancing.md
   - Guides:
       - guides/index.md
-      - ✅ Checklist Ctf: guides/✅ Checklist CTF.md
       - 🍃 Mongodb: guides/🍃 MongoDB.md
       - 🐬 Mysql: guides/🐬 MySQL.md
       - 💉 Lfi & Rfi: guides/💉 LFI & RFI.md

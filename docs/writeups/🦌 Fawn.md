@@ -1,11 +1,12 @@
 ---
 OS: Linux
 Level: Very Easy
-Skills: FTP, Anonymous Access
+Skills: FTP
+tags: [linux, ftp]
 ---
 # 🦌 Fawn
 <div class="machine-properties">
-  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">FTP</span> <span class="prop-badge skills">Anonymous Access</span>
+  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">FTP</span>
 </div>
 
 
@@ -89,3 +90,8 @@ The flag is now saved locally as `flag.txt`.
 - **Anonymous FTP** is a classic misconfiguration — always check if `ftp-anon` is enabled
 - **vsftpd** reports its version via nmap, making version-based exploit identification easy
 - A single open port was all it took — minimal attack surface, maximum impact
+
+## 🔗 Related
+
+- [[🗃️ FTP]] — FTP protocol guide
+- [[🐊 Crocodile]] — Another machine using anonymous FTP + credential reuse

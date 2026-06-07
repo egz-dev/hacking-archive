@@ -1,11 +1,12 @@
 ---
 OS: Linux
 Level: Very Easy
-Skills: Gobuster, Default Credentials, Web Enumeration
+Skills: Gobuster
+tags: [linux, web]
 ---
 # 🧨 Preignition
 <div class="machine-properties">
-  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">Gobuster</span> <span class="prop-badge skills">Default Credentials</span> <span class="prop-badge skills">Web Enumeration</span>
+  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">Gobuster</span>
 </div>
 
 
@@ -82,3 +83,9 @@ The login succeeds immediately:
 - **Default credentials are everywhere** — `admin:admin` should be the first thing you try on any login form before reaching for hydra or wordlists
 - **Single-port boxes are common in Starting Point** — don't overthink it; the vulnerability is often in the only service exposed
 - No privilege escalation was needed — the admin panel granted everything after a single directory scan and a default password
+
+## 🔗 Related
+
+- [[💣 Gobuster]] — Directory busting guide
+- [[📅 Appointment]] — Another web login box (SQLi bypass)
+- [[🐊 Crocodile]] — Gobuster + credential reuse chain

@@ -1,11 +1,12 @@
 ---
 OS: Linux
 Level: Very Easy
-Skills: MySQL, MariaDB, Database Enumeration
+Skills: MySQL
+tags: [linux, database, mysql]
 ---
 # 🐬 Sequel
 <div class="machine-properties">
-  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">MySQL</span> <span class="prop-badge skills">MariaDB</span> <span class="prop-badge skills">Database Enumeration</span>
+  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">MySQL</span>
 </div>
 
 
@@ -154,3 +155,9 @@ The flag is recovered from row 5 of the `config` table — a plaintext value amo
 - **Non-default database names are dead giveaways** — `htb` stood out immediately among the three system databases
 - **`--ssl=0` may be needed on CTF servers** — self-signed or missing certificates can block the connection if SSL is attempted
 - No privilege escalation was needed — root MySQL access exposed the flag directly with no further exploitation required
+
+## 🔗 Related
+
+- [[🐬 MySQL]] — MySQL/MariaDB enumeration & exploitation
+- [[📅 Appointment]] — SQL injection via web login
+- [[👹 Mongod]] — MongoDB NoSQL enumeration

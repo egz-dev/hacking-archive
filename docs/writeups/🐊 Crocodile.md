@@ -1,11 +1,12 @@
 ---
 OS: Linux
 Level: Very Easy
-Skills: FTP, Anonymous Access, Gobuster, Default Credentials, Sensitive Data Exposure, Web Enumeration
+Skills: FTP, Gobuster
+tags: [linux, ftp, web]
 ---
 # 🐊 Crocodile
 <div class="machine-properties">
-  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">FTP</span> <span class="prop-badge skills">Anonymous Access</span> <span class="prop-badge skills">Gobuster</span> <span class="prop-badge skills">Default Credentials</span> <span class="prop-badge skills">Sensitive Data Exposure</span> <span class="prop-badge skills">Web Enumeration</span>
+  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">FTP</span> <span class="prop-badge skills">Gobuster</span>
 </div>
 
 
@@ -170,3 +171,10 @@ The flag is displayed on the admin dashboard. No privilege escalation, no exploi
 - **Credential reuse across services** — the FTP-leaked `allowed.userlist` and `allowed.userlist.passwd` files were the keys to the web login. Always pair credentials found on one service with every other service on the box (SSH, web panels, SMB, WinRM, etc.).
 - **FTP enumeration is fast, quiet, and often overlooked** — anonymous login + `ls` + `get` took seconds with zero exploit noise. Always check FTP before resorting to brute-forcing or vulnerability scanning.
 - **No exploitation framework needed** — this entire box was solved with `ftp`, `cat`, and `gobuster`. A methodical enumeration workflow beats blind Metasploit usage every time.
+
+## 🔗 Related
+
+- [[🗃️ FTP]] — Anonymous FTP & credential reuse chain
+- [[💣 Gobuster]] — Directory busting for hidden endpoints
+- [[🦌 Fawn]] — Simpler FTP anonymous access box
+- [[🧨 Preignition]] — Another Gobuster + default credentials box

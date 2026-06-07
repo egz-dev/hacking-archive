@@ -2,6 +2,7 @@
 OS: Linux
 Level: Very Easy
 Skills: SQL Injection, Gobuster
+tags: [linux, web, sqli]
 ---
 # 📅 Appointment
 <div class="machine-properties">
@@ -109,3 +110,10 @@ The injection succeeds — the application logs us in as an administrator, revea
 - **Comment-based bypass** — `admin'-- -` comments out the password check entirely, authenticating as admin without needing their password
 - **Comment syntax matters** — `-- -` (space after double dash) is MySQL-specific; `#` and `--` (no trailing space) work on other DBMS
 - The flag was accessible immediately after bypass — no privilege escalation, no file read, no lateral movement needed
+
+## 🔗 Related
+
+- [[💉 SQL Injection]] — SQL injection login bypass techniques
+- [[💣 Gobuster]] — Directory busting
+- [[🐬 Sequel]] — MySQL/MariaDB database enumeration
+- [[🧨 Preignition]] — Another web login box (default credentials)

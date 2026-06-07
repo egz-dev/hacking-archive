@@ -1,11 +1,12 @@
 ---
 OS: Linux
 Level: Very Easy
-Skills: Redis, Database Enumeration
+Skills: Redis
+tags: [linux, database, redis]
 ---
 # 💾 Redeemer
 <div class="machine-properties">
-  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">Redis</span> <span class="prop-badge skills">Database Enumeration</span>
+  <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span> <span class="prop-badge skills">Redis</span>
 </div>
 
 
@@ -102,3 +103,8 @@ The flag is retrieved directly — no exploitation, no file write, no SSH key in
 - **`KEYS *` is safe on small DBs** (4 keys here) but blocks on production instances — `SCAN 0` is the safer alternative
 - **Single-port boxes are common in Starting Point** — don't overthink it; the vulnerability is often in the only service exposed
 - No privilege escalation was needed — the flag was stored as a plain Redis key with no access controls
+
+## 🔗 Related
+
+- [[🗄️ Redis]] — Redis enumeration & exploitation
+- [[👹 Mongod]] — Another database enumeration box
