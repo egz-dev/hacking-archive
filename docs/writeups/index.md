@@ -29,6 +29,10 @@
   <span class="card-title">🔄 Synced</span>
   <span class="card-meta"> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span></span>
 </a>
+<a class="machine-card" href="🥉 Three/">
+  <span class="card-title">🥉 Three</span>
+  <span class="card-meta"> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span></span>
+</a>
 <a class="machine-card" href="🦌 Fawn/">
   <span class="card-title">🦌 Fawn</span>
   <span class="card-meta"> <span class="prop-badge linux">Linux</span> <span class="prop-badge very-easy">Very Easy</span></span>

@@ -1,8 +1,17 @@
 # Practical Guides
 
 <div class="machine-grid">
+<a class="machine-card" href="☁️ AWS S3/">
+  <span class="card-title">☁ ️ Aws S3</span>
+</a>
 <a class="machine-card" href="🍃 MongoDB/">
   <span class="card-title">🍃 Mongodb</span>
+</a>
+<a class="machine-card" href="🎯 ffuf/">
+  <span class="card-title">🎯 Ffuf</span>
+</a>
+<a class="machine-card" href="🐚 PHP Webshell/">
+  <span class="card-title">🐚 Php Webshell</span>
 </a>
 <a class="machine-card" href="🐬 MySQL/">
   <span class="card-title">🐬 Mysql</span>

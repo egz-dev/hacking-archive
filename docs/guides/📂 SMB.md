@@ -2,58 +2,58 @@
 tags: [smb, windows]
 ---
 
-> **SMB** (Server Message Block) es un protocolo de compartición de archivos en red usado principalmente por Windows. Corre en **puerto 445** (SMB moderno sobre TCP) y **puerto 139** (NetBIOS legacy). Esta guía cubre lo que hemos practicado.
+> **SMB** (Server Message Block) is a network file sharing protocol used primarily by Windows. It runs on **port 445** (modern SMB over TCP) and **port 139** (NetBIOS legacy). This guide covers what we've practiced.
 
 ---
 
-## Quickstart — Enumeración anónima de shares
+## Quickstart — Anonymous share enumeration
 
 ```bash
-# Listar shares anónimamente
+# List shares anonymously
 $ smbclient -L 10.129.1.10
-Enter WORKGROUP\user's password:        <-- solo presiona Enter
+Enter WORKGROUP\\user's password:        <-- just press Enter
 
-# Conectarse a un share accesible
-$ smbclient \\\\10.129.1.10\\ShareName
-Enter WORKGROUP\user's password:        <-- solo presiona Enter
-smb: \> ls
-smb: \> get flag.txt
-smb: \> quit
+# Connect to an accessible share
+$ smbclient \\\\\\\\10.129.1.10\\\\ShareName
+Enter WORKGROUP\\user's password:        <-- just press Enter
+smb: \\> ls
+smb: \\> get flag.txt
+smb: \\> quit
 ```
 
-**Si obtienes `NT_STATUS_ACCESS_DENIED` listando shares, prueba con guest:**
+**If you get `NT_STATUS_ACCESS_DENIED` listing shares, try guest:**
 ```bash
 smbclient -L 10.129.1.10 -U guest
-smbclient -L 10.129.1.10 -U guest%          # contraseña vacía
+smbclient -L 10.129.1.10 -U guest%          # empty password
 ```
 
 ---
 
-## Qué verificar cuando SMB está abierto
+## What to check when SMB is open
 
-SMB rara vez aparece solo en máquinas Windows. Trátalo como parte de un patrón de reconocimiento:
+SMB rarely appears alone on Windows machines. Treat it as part of a reconnaissance pattern:
 
-### Patrón clásico de puertos Windows
+### Classic Windows port pattern
 
 ```
 PORT      STATE SERVICE          Notes
-135/tcp   open  msrpc             RPC — servicios internos Windows
+135/tcp   open  msrpc             RPC — internal Windows services
 139/tcp   open  netbios-ssn       NetBIOS legacy
 445/tcp   open  microsoft-ds      SMB — file shares, null sessions
-3389/tcp  open  ms-wbt-server     RDP — acceso GUI (probar contraseña vacía)
-5985/tcp  open  wsman             WinRM — shell PowerShell (necesita creds)
+3389/tcp  open  ms-wbt-server     RDP — GUI access (try empty password)
+5985/tcp  open  wsman             WinRM — PowerShell shell (needs creds)
 ```
 
-> 💡 **Reconocimiento de patrones:** Cuando ves SMB (445) + RPC (135) + WinRM (5985), estás en una máquina Windows donde tu objetivo es **encontrar credenciales**. Anonymous SMB shares, Responder NTLM capture, o web exploitation son los vectores iniciales típicos.
+> 💡 **Pattern recognition:** When you see SMB (445) + RPC (135) + WinRM (5985), you're on a Windows machine where your goal is to **find credentials**. Anonymous SMB shares, Responder NTLM capture, or web exploitation are the typical initial vectors.
 
 ---
 
-## SMB Signing — Por qué importa
+## SMB Signing — Why it matters
 
-SMB signing previene ataques de relay NTLM. Verifícalo temprano.
+SMB signing prevents NTLM relay attacks. Check it early.
 
 ```bash
-# Verificar SMB signing con nmap
+# Check SMB signing with nmap
 nmap --script smb2-security-mode -p445 10.129.1.10
 # Output:
 # | smb2-security-mode:
@@ -61,52 +61,52 @@ nmap --script smb2-security-mode -p445 10.129.1.10
 # |_    Message signing enabled but not required    → ✅ relayable
 ```
 
-| Estado de Signing | Qué significa |
+| Signing State | What it means |
 | :---------------- | :------------ |
-| **Enabled but not required** | Se puede relayar hashes NTLM a este target |
-| **Required** | No se puede relayar — crackear el hash |
-| **Disabled** | Se puede relayar — común en workstations y Linux/Samba |
+| **Enabled but not required** | NTLM hashes can be relayed to this target |
+| **Required** | Cannot relay — crack the hash instead |
+| **Disabled** | Can relay — common on workstations and Linux/Samba |
 
-> 💡 **De HTB Dancing:** SMB signing estaba *"enabled but not required"* — si hubiéramos capturado credenciales, el relay habría sido posible. Lo dejamos anotado como observación de recon.
+> 💡 **From HTB Dancing:** SMB signing was *"enabled but not required"* — if we had captured credentials, relay would have been possible. We noted it as a recon observation.
 
 ---
 
-## Comandos smbclient
+## smbclient Commands
 
-| Comando | Qué hace |
+| Command | What it does |
 | :------ | :------ |
-| `ls` / `dir` | Listar archivos y directorios |
-| `cd <dir>` | Cambiar de directorio |
-| `cd ..` | Ir al directorio padre |
-| `pwd` | Mostrar directorio actual |
-| `get <file>` | Descargar un archivo |
-| `get <remote> <local>` | Descargar y renombrar localmente |
-| `mget *.txt` | Descargar múltiples archivos |
-| `quit` / `exit` | Desconectar |
+| `ls` / `dir` | List files and directories |
+| `cd <dir>` | Change directory |
+| `cd ..` | Go to parent directory |
+| `pwd` | Show current directory |
+| `get <file>` | Download a file |
+| `get <remote> <local>` | Download and rename locally |
+| `mget *.txt` | Download multiple files |
+| `quit` / `exit` | Disconnect |
 
 ---
 
 ## Default Windows Shares
 
-Shares presentes en casi toda máquina Windows. El acceso anónimo **casi siempre está denegado** — enfócate en shares personalizados.
+Shares present on nearly every Windows machine. Anonymous access is **almost always denied** — focus on custom shares.
 
-| Share | Propósito | ¿Anónimo? |
+| Share | Purpose | Anonymous? |
 | :---- | :-------- | :-------- |
-| `ADMIN$` | Admin remoto (acceso a `C:\Windows`) | ❌ No |
-| `C$` / `D$` | Shares de unidad por defecto | ❌ No |
-| `IPC$` | Inter-Process Communication (named pipes) | Limitado |
+| `ADMIN$` | Remote admin (access to `C:\\Windows`) | ❌ No |
+| `C$` / `D$` | Default drive shares | ❌ No |
+| `IPC$` | Inter-Process Communication (named pipes) | Limited |
 
-> 💡 **De HTB Dancing:** `WorkShares` era el único share no-default — y tenía acceso anónimo de lectura.
+> 💡 **From HTB Dancing:** `WorkShares` was the only non-default share — and it had anonymous read access.
 
 ---
 
 ## Useful Nmap Scripts
 
 ```bash
-# Enumerar shares + verificar acceso anónimo
+# Enumerate shares + check anonymous access
 nmap --script smb-enum-shares -p445 10.129.1.10
 
-# Verificar SMB signing (prerrequisito para relay)
+# Check SMB signing (prerequisite for relay)
 nmap --script smb2-security-mode -p445 10.129.1.10
 
 # Full SMB enumeration

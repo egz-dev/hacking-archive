@@ -2,65 +2,65 @@
 tags: [scanning]
 ---
 
-> **Nmap** (Network Mapper) es la herramienta estándar de escaneo de puertos y descubrimiento de red. Es lo primero que ejecutas en cada máquina HTB y CTF. Esta guía cubre lo que hemos practicado en los 11 writeups.
+> **Nmap** (Network Mapper) is the standard port scanning and network discovery tool. It's the first thing you run on every HTB machine and CTF. This guide covers what we've practiced across the 11 writeups.
 
 ---
 
-## Quickstart — Los scans que realmente ejecutamos
+## Quickstart — The scans we actually run
 
-> ⭐ **El pipeline de 2 comandos que uso en cada writeup:**
+> ⭐ **The 2-command pipeline I use in every writeup:**
 >
 > ```bash
-> # 1️⃣ Full port scan — encontrar todos los puertos abiertos
+> # 1️⃣ Full port scan — find all open ports
 > nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn $IP
 >
-> # 2️⃣ Service + version + default scripts en los puertos descubiertos
+> # 2️⃣ Service + version + default scripts on discovered ports
 > nmap -sCV -p21,22,80,445,3389 $IP
 > ```
 
 ---
 
-## Flags esenciales — Las que realmente usamos
+## Essential Flags — The ones we actually use
 
-| Flag | Qué hace |
+| Flag | What it does |
 | :--- | :------ |
-| `-p <ports>` | Puertos a escanear (`-p22,80,443`, `-p-` todos) |
-| `-sS` | SYN scan (half-open, necesita sudo, sigiloso) |
-| `-sT` | TCP connect scan (sin sudo, más lento) |
+| `-p <ports>` | Ports to scan (`-p22,80,443`, `-p-` all ports) |
+| `-sS` | SYN scan (half-open, needs sudo, stealthy) |
+| `-sT` | TCP connect scan (no sudo needed, slower) |
 | `-sV` | Version detection |
-| `-sC` | Ejecutar NSE scripts por defecto |
-| `-sCV` | `-sC` + `-sV` combinados (lo que más uso) |
-| `-Pn` | Saltar host discovery (asumir que el host está up) |
-| `-n` | No DNS resolution (acelera el scan) |
-| `--open` | Mostrar solo puertos abiertos |
-| `--min-rate <n>` | Velocidad mínima de envío en packets/sec |
-| `-vvv` | Máxima verbosidad (ver puertos según se encuentran) |
-| `-T4` | Timing template agresivo (estándar CTF) |
+| `-sC` | Run default NSE scripts |
+| `-sCV` | `-sC` + `-sV` combined (my most-used flag) |
+| `-Pn` | Skip host discovery (assume host is up) |
+| `-n` | No DNS resolution (speeds up scan) |
+| `--open` | Show only open ports |
+| `--min-rate <n>` | Minimum packet send rate in packets/sec |
+| `-vvv` | Maximum verbosity (see ports as they're found) |
+| `-T4` | Aggressive timing template (CTF standard) |
 
 ---
 
-## Pipeline estándar de los writeups
+## Standard Writeup Pipeline
 
 ```bash
-# Stage 1 — Full port scan rápido
+# Stage 1 — Fast full port scan
 nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn $IP
 
-# Stage 2 — Service scan en los puertos descubiertos
+# Stage 2 — Service scan on discovered ports
 nmap -sCV -p21,80,445,3389,5985 $IP -oA scan-$IP
 
-# Opcional: guardar solo texto (-oN) en lugar de todos los formatos
+# Optional: save text-only (-oN) instead of all formats
 nmap -sCV -p21,80 $IP -oN scan-$IP.txt
 ```
 
 ---
 
-## NSE Scripts — Los que hemos usado
+## NSE Scripts — The ones we've used
 
 ```bash
 # FTP — anonymous access
 nmap --script ftp-anon -p21 10.129.1.10
 
-# SMB — signing y shares
+# SMB — signing and shares
 nmap --script smb2-security-mode -p445 10.129.1.10
 nmap --script smb-enum-shares -p445 10.129.1.10
 
@@ -82,57 +82,49 @@ nmap --script redis-info -p6379 10.129.1.10
 
 ---
 
-## Puertos y servicios — Los que hemos visto
+## Ports and Services — What we've seen
 
-| Puerto | Servicio | Qué verificar | Visto en |
+| Port | Service | What to check | Seen in |
 | :----- | :------ | :----------- | :------ |
 | **21** | FTP | Anonymous access, `ftp-anon` | Fawn, Crocodile |
 | **80** | HTTP | Web app, Gobuster, virtual hosts | Preignition, Appointment, Crocodile, Responder |
-| **135** | MSRPC | Windows RPC (parte del patrón Windows) | Dancing, Explosion |
-| **139** | NetBIOS | SMB sobre NetBIOS | Dancing, Explosion |
+| **135** | MSRPC | Windows RPC (part of the Windows pattern) | Dancing, Explosion |
+| **139** | NetBIOS | SMB over NetBIOS | Dancing, Explosion |
 | **445** | SMB | Shares, null session, signing check | Dancing, Explosion |
 | **873** | Rsync | Anonymous modules | Synced |
-| **3306** | MySQL | Root sin password | Sequel |
-| **3389** | RDP | Administrator contraseña vacía | Explosion |
-| **5985** | WinRM | Shell PowerShell (necesita creds) | Dancing, Explosion, Responder |
-| **6379** | Redis | Sin autenticación | Redeemer |
-| **27017** | MongoDB | Sin autenticación | Mongod |
+| **3306** | MySQL | Root with no password | Sequel |
+| **3389** | RDP | Administrator with empty password | Explosion |
+| **5985** | WinRM | PowerShell shell (needs creds) | Dancing, Explosion, Responder |
+| **6379** | Redis | No authentication | Redeemer |
+| **27017** | MongoDB | No authentication | Mongod |
 
 ---
 
-## Port States — Qué significan
+## Port States — What they mean
 
-| State | Significado | Qué hacer |
+| State | Meaning | What to do |
 | :---- | :--------- | :-------- |
-| **open** | Servicio acepta conexiones | Enumerar más |
-| **filtered** | Firewall bloquea probes | Podría estar abierto pero protegido |
-| **closed** | Puerto alcanzable pero sin servicio | Seguir adelante |
+| **open** | Service accepting connections | Enumerate further |
+| **filtered** | Firewall blocking probes | Might be open but protected |
+| **closed** | Port reachable but no service listening | Move on |
 
 ---
 
 ## Timing Templates
 
-| Template | Flag | Cuándo usarlo |
+| Template | Flag | When to use |
 | :------- | :--- | :----------- |
-| **Aggressive** | `-T4` | **Estándar CTF** — rápido, redes fiables |
-| **Normal** | `-T3` | Default — balance velocidad/sigilo |
+| **Aggressive** | `-T4` | **CTF standard** — fast, reliable networks |
+| **Normal** | `-T3` | Default — balanced speed/stealth |
 
 ---
 
 ## Output Formats
 
-| Flag | Formato | Cuándo usarlo |
+| Flag | Format | When to use |
 | :--- | :----- | :----------- |
-| `-oN <file>` | Normal | Texto legible |
-| `-oA <basename>` | Todos los formatos | Guarda `.nmap`, `.xml`, `.gnmap` |
-
----
-
-## 🔗 Related
-
-**Machines:** [[🦌 Fawn]], [[🩰 Dancing]], [[💾 Redeemer]], [[💥 Explosion]], [[🧨 Preignition]], [[👹 Mongod]], [[🔄 Synced]], [[📅 Appointment]], [[🐬 Sequel]], [[🐊 Crocodile]], [[🧑‍🚒 Responder]]
-
-**Guides:**
+| `-oN <file>` | Normal | Human-readable text |
+| `-oA <basename>` | All formats | Saves `.nmap`, `.xml`, `.gnmap` |
 
 ---
 

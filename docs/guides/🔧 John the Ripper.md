@@ -2,96 +2,96 @@
 tags: [cracking]
 ---
 
-> **John the Ripper (JtR)** es una herramienta de cracking de contraseñas que soporta cientos de formatos de hash. Esta guía cubre lo que hemos practicado: crackear hashes NTLMv2 capturados con Responder.
+> **John the Ripper (JtR)** is a password cracking tool that supports hundreds of hash formats. This guide covers what we've practiced: cracking NTLMv2 hashes captured with Responder.
 
 ---
 
-## Quickstart — Crackear NTLMv2
+## Quickstart — Crack NTLMv2
 
 ```bash
-# 1. Capturar el hash con Responder
+# 1. Capture the hash with Responder
 sudo responder -I tun0
-# El hash aparece en: /usr/share/responder/logs/SMB-NTLMv2-*.txt
+# The hash appears in: /usr/share/responder/logs/SMB-NTLMv2-*.txt
 
-# 2. Crackear con John (auto-detecta el formato)
+# 2. Crack with John (auto-detects the format)
 john hash.txt
 
-# 3. O forzar el formato y usar wordlist
+# 3. Or force the format and use a wordlist
 john --format=netntlmv2 --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
 
-# 4. Ver resultados
+# 4. Show results
 john --show hash.txt
 ```
 
 ---
 
-## Formato del hash NTLMv2
+## NTLMv2 hash format
 
 ```
 username::domain:ServerChallenge:NTProofStr:NTResponse
 ```
 
-Ejemplo:
+Example:
 ```
 admin::WORKGROUP:1122334455667788:a3b4c5d6e7f8091a2b3c4d5e6f708192:0101000000000000...
 ```
 
 ---
 
-## Modos de ataque
+## Attack modes
 
 ### 1. Wordlist Attack
 
 ```bash
-# Ataque básico con wordlist
+# Basic wordlist attack
 john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
 
-# Con reglas para mutación de contraseñas
+# With rules for password mutation
 john --wordlist=/usr/share/wordlists/rockyou.txt --rules hash.txt
 
-# Forzar formato
+# Force format
 john --wordlist=/usr/share/wordlists/rockyou.txt --rules --format=netntlmv2 hash.txt
 ```
 
-### 2. Auto-detección
+### 2. Auto-detection
 
 ```bash
-# John auto-detecta el formato del hash
+# John auto-detects the hash format
 john hash.txt
 
-# Listar todos los formatos soportados
+# List all supported formats
 john --list=formats
 
-# Filtrar formatos por keyword
+# Filter formats by keyword
 john --list=formats | grep -i ntlm
 ```
 
 ---
 
-## Gestión de sesiones
+## Session management
 
 ```bash
-# Iniciar una sesión con nombre (auto-guarda progreso)
+# Start a named session (auto-saves progress)
 john --session=crack1 --wordlist=rockyou.txt hash.txt
 
-# Restaurar una sesión interrumpida
+# Restore an interrupted session
 john --restore=crack1
 
-# Mostrar contraseñas crackeadas
+# Show cracked passwords
 john --show hash.txt
 ```
 
-> 💡 **Siempre usa sesiones para cracks largos.** John guarda el progreso automáticamente — puedes Ctrl+C y retomar con `--restore`.
+> 💡 **Always use sessions for long cracks.** John saves progress automatically — you can Ctrl+C and resume with `--restore`.
 
 ---
 
-## Wordlists esenciales
+## Essential wordlists
 
 ```bash
-# RockYou (el wordlist estándar de CTF)
-/usr/share/wordlists/rockyou.txt.gz    # Debian/Kali (gunzip primero)
+# RockYou (the standard CTF wordlist)
+/usr/share/wordlists/rockyou.txt.gz    # Debian/Kali (gunzip first)
 
-# SecLists (colección completa)
+# SecLists (full collection)
 git clone https://github.com/danielmiessler/SecLists
 ```
 
@@ -99,12 +99,12 @@ git clone https://github.com/danielmiessler/SecLists
 
 ## CTF Workflow
 
-1. **Capturar el hash** — con Responder u otra herramienta
-2. **Identificar el formato** — `john hash.txt` (auto-detecta) o `john --list=formats | grep keyword`
-3. **Crackear con wordlist primero** — `john --wordlist=rockyou.txt hash.txt`
-4. **Añadir reglas si la wordlist falla** — `john --wordlist=rockyou.txt --rules=best64 hash.txt`
-5. **Ver progreso** — `john --show hash.txt`
-6. **Restaurar sesiones interrumpidas** — `john --restore`
+1. **Capture the hash** — with Responder or another tool
+2. **Identify the format** — `john hash.txt` (auto-detects) or `john --list=formats | grep keyword`
+3. **Crack with wordlist first** — `john --wordlist=rockyou.txt hash.txt`
+4. **Add rules if wordlist fails** — `john --wordlist=rockyou.txt --rules=best64 hash.txt`
+5. **Check progress** — `john --show hash.txt`
+6. **Restore interrupted sessions** — `john --restore`
 
 ---
 

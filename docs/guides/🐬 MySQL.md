@@ -2,59 +2,59 @@
 tags: [database, mysql]
 ---
 
-> **MySQL / MariaDB** es una base de datos relacional que corre en **puerto 3306**. En CTFs, la mala configuración más común es acceso root sin contraseña — permitiendo enumeración completa de la base de datos. Esta guía cubre lo que hemos practicado.
+> **MySQL / MariaDB** is a relational database running on **port 3306**. In CTFs, the most common misconfiguration is root access with no password — allowing full database enumeration. This guide covers what we've practiced.
 
 ---
 
-## Quickstart — Acceso sin autenticación
+## Quickstart — Unauthenticated access
 
 ```bash
-# Probar si MySQL acepta root sin contraseña
+# Test if MySQL accepts root with no password
 $ mysql -h 10.129.1.10 -u root
 
-# Con contraseña
+# With password
 $ mysql -h 10.129.1.10 -u root -p
 $ mysql -h 10.129.1.10 -u root -proot
 
-# Deshabilitar SSL (necesario en algunos servidores CTF)
+# Disable SSL (necessary on some CTF servers)
 $ mysql -h 10.129.1.10 -u root --ssl=0
 ```
 
-**Si `mysql` no está instalado:**
+**If `mysql` is not installed:**
 ```bash
 sudo apt install mysql-client
 ```
 
 ---
 
-## Enumeración básica
+## Basic enumeration
 
-Una vez conectado, estos son los comandos esenciales para mapear la base de datos:
+Once connected, these are the essential commands to map the database:
 
 ```sql
--- Info del servidor
+-- Server info
 SELECT VERSION();
 SHOW VARIABLES LIKE '%version%';
 
--- Listar todas las bases de datos
+-- List all databases
 SHOW DATABASES;
 
--- Cambiar a una base de datos
+-- Switch to a database
 USE <database>;
 
--- Listar tablas en la base de datos actual
+-- List tables in the current database
 SHOW TABLES;
 
--- Ver estructura de una tabla
+-- View table structure
 DESCRIBE <table>;
 
--- Dumpear toda la tabla
+-- Dump entire table
 SELECT * FROM <table>;
 
--- Contar filas
+-- Count rows
 SELECT COUNT(*) FROM <table>;
 
--- Usuario actual y privilegios
+-- Current user and privileges
 SELECT USER();
 SHOW GRANTS;
 ```
@@ -65,30 +65,30 @@ SHOW GRANTS;
 
 ### Database Operations
 
-| Comando | Qué hace |
+| Command | What it does |
 | :------ | :------ |
-| `SHOW DATABASES;` | Listar todas las bases de datos |
-| `USE <db>;` | Cambiar a una base de datos |
-| `SELECT DATABASE();` | Mostrar base de datos actual |
+| `SHOW DATABASES;` | List all databases |
+| `USE <db>;` | Switch to a database |
+| `SELECT DATABASE();` | Show current database |
 
 ### Table Operations
 
-| Comando | Qué hace |
+| Command | What it does |
 | :------ | :------ |
-| `SHOW TABLES;` | Listar tablas en la BD actual |
-| `DESCRIBE <table>;` | Mostrar columnas, tipos, claves |
-| `SELECT * FROM <table>;` | Dumpear todas las filas |
-| `SELECT column1,column2 FROM <table>;` | Dumpear columnas específicas |
+| `SHOW TABLES;` | List tables in current DB |
+| `DESCRIBE <table>;` | Show columns, types, keys |
+| `SELECT * FROM <table>;` | Dump all rows |
+| `SELECT column1,column2 FROM <table>;` | Dump specific columns |
 
 ---
 
 ## Useful Nmap Scripts
 
 ```bash
-# Info + detección de versión
+# Info + version detection
 nmap -sV -p3306 --script mysql-info 10.129.1.10
 
-# Verificar root sin contraseña
+# Check root with empty password
 nmap -sV -p3306 --script mysql-empty-password 10.129.1.10
 ```
 
@@ -96,9 +96,9 @@ nmap -sV -p3306 --script mysql-empty-password 10.129.1.10
 
 ## MySQL Security Notes
 
-- **Root sin contraseña** es la mala configuración #1 en CTF — siempre prueba `mysql -h <IP> -u root` primero
-- **MariaDB en Debian** usa `unix_socket` auth para root localmente — pero si `bind-address = 0.0.0.0`, root remoto puede seguir sin contraseña
-- Lo vimos en: **Sequel** (MariaDB 10.3.27, root sin password, flag en tabla `config`)
+- **Root with no password** is the #1 CTF misconfiguration — always test `mysql -h <IP> -u root` first
+- **MariaDB on Debian** uses `unix_socket` auth for local root — but if `bind-address = 0.0.0.0`, remote root may still have no password
+- We saw it on: **Sequel** (MariaDB 10.3.27, root with no password, flag in table `config`)
 
 ---
 

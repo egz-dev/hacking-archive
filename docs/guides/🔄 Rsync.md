@@ -2,43 +2,43 @@
 tags: [rsync]
 ---
 
-> **Rsync** (Remote Sync) es una herramienta de sincronización de archivos que corre en **puerto 873**. Es común encontrar mala configuración de **acceso anónimo** a directorios compartidos (módulos). Esta guía cubre lo que hemos practicado.
+> **Rsync** (Remote Sync) is a file synchronization tool running on **port 873**. Misconfigured **anonymous access** to shared directories (modules) is a common finding. This guide covers what we've practiced.
 
 ---
 
-## Quickstart — Enumeración de módulos y exfiltración
+## Quickstart — Module enumeration and exfiltration
 
 ```bash
-# Listar módulos disponibles — lo primero que se prueba
+# List available modules — the first thing to test
 $ rsync 10.129.1.10::
 
-# Descargar todo de un módulo
+# Download everything from a module
 $ rsync -av 10.129.1.10::module_name ./local-destination/
 
-# Listar contenido de un módulo sin descargar
+# List contents of a module without downloading
 $ rsync --list-only 10.129.1.10::module_name
 
-# Descargar un solo archivo
+# Download a single file
 $ rsync -av 10.129.1.10::public/flag.txt ./flag.txt
 ```
 
 ---
 
-## Comandos esenciales
+## Essential commands
 
-| Comando | Qué hace |
+| Command | What it does |
 | :------ | :------ |
-| `rsync <host>::` | Listar módulos disponibles (sin auth) |
-| `rsync <host>::<module>` | Listar archivos dentro de un módulo |
-| `rsync -av <host>::<module> ./dest/` | Descargar contenido del módulo |
-| `rsync --list-only <host>::<module>` | Listar sin descargar |
+| `rsync <host>::` | List available modules (no auth) |
+| `rsync <host>::<module>` | List files inside a module |
+| `rsync -av <host>::<module> ./dest/` | Download module contents |
+| `rsync --list-only <host>::<module>` | List without downloading |
 
 ---
 
 ## Useful Nmap Scripts
 
 ```bash
-# Listar módulos rsync (el script más útil)
+# List rsync modules (most useful script)
 nmap --script rsync-list-modules -p873 10.129.1.10
 
 # Full service + version detection
@@ -49,17 +49,17 @@ nmap -sV -p873 10.129.1.10
 
 ## CTF Workflow
 
-1. **Escanear puerto** — `nmap -sCV -p873 10.129.1.10`
-2. **Listar módulos** — `rsync 10.129.1.10::`
-3. **Explorar módulo** — `rsync --list-only 10.129.1.10::public`
-4. **Descargar** — `rsync -av 10.129.1.10::public ./output/`
+1. **Scan port** — `nmap -sCV -p873 10.129.1.10`
+2. **List modules** — `rsync 10.129.1.10::`
+3. **Explore module** — `rsync --list-only 10.129.1.10::public`
+4. **Download** — `rsync -av 10.129.1.10::public ./output/`
 
 ---
 
 ## Rsync Security Notes
 
-- **Acceso anónimo** es la mala configuración crítica — sin `auth users` en `rsyncd.conf`, cualquiera puede leer (y potencialmente escribir) archivos
-- Lo vimos en: **Synced** (rsync protocol 31, módulo `public` anónimo, flag en `flag.txt`)
+- **Anonymous access** is the critical misconfiguration — without `auth users` in `rsyncd.conf`, anyone can read (and potentially write) files
+- We saw it on: **Synced** (rsync protocol 31, anonymous `public` module, flag in `flag.txt`)
 
 ---
 

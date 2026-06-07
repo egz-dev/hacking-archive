@@ -2,67 +2,67 @@
 tags: [windows, rdp, windows-tools]
 ---
 
-> **xfreerdp** es el cliente RDP open-source del proyecto FreeRDP. Se conecta a hosts Windows en **puerto 3389**. Esta guía cubre lo que hemos practicado.
+> **xfreerdp** is the open-source RDP client from the FreeRDP project. It connects to Windows hosts on **port 3389**. This guide covers what we've practiced.
 
 ---
 
-## Quickstart — Conexión básica
+## Quickstart — Basic connection
 
 ```bash
-# Interactivo (pide contraseña — lo más seguro)
+# Interactive (prompts for password — safest)
 $ xfreerdp /v:10.129.1.10 /u:Administrator
 
-# Con contraseña inline (⚠️ aparece en el historial de shell)
+# With inline password (⚠️ appears in shell history)
 $ xfreerdp /v:10.129.1.10 /u:Administrator /p:Password123
 
-# Ignorar certificado autofirmado (esencial en CTF)
+# Ignore self-signed certificate (essential in CTF)
 $ xfreerdp /v:10.129.1.10 /u:Administrator /p:Password123 /cert-ignore
 
-# Pantalla completa
+# Full screen
 $ xfreerdp /v:10.129.1.10 /u:Administrator /p:Password123 /cert-ignore /f
 ```
 
-**Para salir de pantalla completa:** `Ctrl+Alt+Enter`
+**To exit full screen:** `Ctrl+Alt+Enter`
 
-### ✅ Antes de empezar
+### ✅ Before you start
 ```bash
 $ nmap -sCV -p3389 10.129.1.10
-# Buscar "Remote Desktop Protocol" en el output
+# Look for "Remote Desktop Protocol" in the output
 ```
 
 ---
 
-## Opciones esenciales
+## Essential options
 
-| Flag | Qué hace |
+| Flag | What it does |
 | :--- | :------ |
-| `/v:<host>` | IP/hostname del target (puerto 3389 por defecto) |
+| `/v:<host>` | Target IP/hostname (defaults to port 3389) |
 | `/u:<user>` | Username |
 | `/p:<pass>` | Password |
-| `/cert-ignore` | Ignorar warnings de certificado (certs autofirmados) |
-| `/f` | Modo pantalla completa |
+| `/cert-ignore` | Ignore certificate warnings (self-signed certs) |
+| `/f` | Full screen mode |
 
 ---
 
 ## CTF / HTB Techniques
 
-### Contraseña vacía de Administrator
+### Administrator with empty password
 
-Intentar RDP como `Administrator` con **contraseña vacía** es sorprendentemente común en entornos CTF:
+Trying RDP as `Administrator` with an **empty password** is surprisingly common in CTF environments:
 
 ```bash
 $ xfreerdp3 /v:10.129.1.10 /u:Administrator /cert-ignore
-Password:                    <-- solo presiona Enter
+Password:                    <-- just press Enter
 ```
 
-> 💡 **Por qué funciona:** Windows permite cuentas con contraseña en blanco en ciertas configuraciones (VMs recién provisionadas, Group Policy mal configurada).
+> 💡 **Why it works:** Windows allows accounts with blank passwords in certain configurations (freshly provisioned VMs, misconfigured Group Policy).
 
 ---
 
 ## Useful Nmap Scripts
 
 ```bash
-# Detectar RDP + info NTLM
+# Detect RDP + NTLM info
 nmap -sV -p3389 10.129.1.10
 nmap --script rdp-ntlm-info -p3389 10.129.1.10
 ```
@@ -71,11 +71,11 @@ nmap --script rdp-ntlm-info -p3389 10.129.1.10
 
 ## Troubleshooting
 
-| Error / Síntoma | Causa probable |
+| Error / Symptom | Likely cause |
 | :-------------- | :------------- |
-| `ERRCONNECT_CONNECT_FAILED` | Puerto 3389 no abierto / host inalcanzable |
-| `ERRCONNECT_LOGON_FAILURE` | Username/password incorrectos |
-| `SSL certificate problem` | Cert autofirmado — usa `/cert-ignore` |
+| `ERRCONNECT_CONNECT_FAILED` | Port 3389 not open / host unreachable |
+| `ERRCONNECT_LOGON_FAILURE` | Incorrect username/password |
+| `SSL certificate problem` | Self-signed cert — use `/cert-ignore` |
 
 ---
 

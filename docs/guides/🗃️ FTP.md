@@ -2,7 +2,7 @@
 tags: [ftp]
 ---
 
-> **FTP** transfiere archivos sobre TCP en dos canales: **control** (puerto 21) y **datos** (puerto 20 o negociado). Esta guía cubre lo que hemos practicado.
+> **FTP** transfers files over TCP using two channels: **control** (port 21) and **data** (port 20 or negotiated). This guide covers what we've practiced.
 
 ---
 
@@ -11,46 +11,46 @@ tags: [ftp]
 ```bash
 $ ftp 10.129.1.10
 Name: anonymous
-Password: <cualquier cosa o Enter>
+Password: <anything or just Enter>
 ftp> ls
 ftp> get flag.txt
 ftp> quit
 ```
 
-**Prueba toggling passive mode si el servidor rechaza tu data connection:**
+**Try toggling passive mode if the server rejects your data connection:**
 ```bash
 ftp> passive
 ```
 
 ---
 
-## Comandos esenciales del cliente
+## Essential Client Commands
 
-| Comando | Qué hace |
+| Command | What it does |
 | :------ | :------ |
-| `open <host>` | Conectar a un servidor FTP |
-| `ls` / `dir` | Listar archivos |
-| `cd <path>` | Cambiar de directorio |
-| `pwd` | Mostrar directorio actual |
-| `get <file>` | Descargar un archivo |
-| `mget *.txt` | Descargar múltiples archivos |
+| `open <host>` | Connect to an FTP server |
+| `ls` / `dir` | List files |
+| `cd <path>` | Change directory |
+| `pwd` | Show current directory |
+| `get <file>` | Download a file |
+| `mget *.txt` | Download multiple files |
 | `passive` | Toggle passive mode on/off |
-| `binary` | Cambiar a modo binario |
-| `quit` / `bye` | Desconectar |
+| `binary` | Switch to binary mode |
+| `quit` / `bye` | Disconnect |
 
 ---
 
-## Anonymous FTP → Cadena de Credential Reuse
+## Anonymous FTP → Credential Reuse Chain
 
-Anonymous FTP suele ser el **primer paso** en una cadena de ataque multi-servicio. Cuando encuentras archivos legibles, prueba inmediatamente las credenciales descubiertas contra todos los demás servicios (SSH, paneles web, SMB, WinRM).
+Anonymous FTP is often the **first step** in a multi-service attack chain. When you find readable files, immediately test discovered credentials against all other services (SSH, web panels, SMB, WinRM).
 
-### Cadena clásica (de HTB Crocodile)
+### Classic chain (from HTB Crocodile)
 
 ```
-Anonymous FTP → descargar listas user/password → Gobuster encuentra login oculto → credential reuse → admin panel
+Anonymous FTP → download user/password lists → Gobuster finds hidden login → credential reuse → admin panel
 ```
 
-**Paso 1 — Descargar todo del FTP anónimo:**
+**Step 1 — Download everything from the anonymous FTP:**
 ```bash
 $ ftp 10.129.1.15
 Name: anonymous
@@ -64,7 +64,7 @@ ftp> get allowed.userlist.passwd
 ftp> quit
 ```
 
-**Paso 2 — Emparejar credenciales (línea por línea):**
+**Step 2 — Pair credentials (line by line):**
 ```bash
 $ cat allowed.userlist
 aron
@@ -78,12 +78,12 @@ Supersecretpassword1
 @BaASD&9032123sADS
 rKXM59ESxesUFHAd
 
-# Línea 4 users[4] + passwords[4] → admin:rKXM59ESxesUFHAd
+# Line 4 users[4] + passwords[4] → admin:rKXM59ESxesUFHAd
 ```
 
-**Paso 3 — Probar contra cada otro servicio:**
+**Step 3 — Test against every other service:**
 ```bash
-# Web login form (el vector real en Crocodile)
+# Web login form (the actual vector in Crocodile)
 curl -d 'user=admin&pass=rKXM59ESxesUFHAd' http://10.129.1.15/login.php -L -v
 
 # SSH
@@ -92,18 +92,18 @@ ssh admin@10.129.1.15
 # SMB
 smbclient -L 10.129.1.15 -U 'admin%rKXM59ESxesUFHAd'
 
-# WinRM (si puerto 5985 está abierto)
+# WinRM (if port 5985 is open)
 evil-winrm -i 10.129.1.15 -u admin -p 'rKXM59ESxesUFHAd'
 ```
 
-> 💡 **Key insight:** Archivos llamados `allowed.userlist` y `allowed.userlist.passwd` en el root de FTP son una señal clara de credential reuse. Siempre descarga **ambos** archivos juntos y prueba cada par username/password.
+> 💡 **Key insight:** Files named `allowed.userlist` and `allowed.userlist.passwd` in the FTP root are a clear signal of credential reuse. Always download **both** files together and test every username/password pair.
 
 ---
 
 ## Useful Nmap Scripts
 
 ```bash
-# Verificar acceso anónimo + listar archivos
+# Check anonymous access + list files
 nmap --script ftp-anon -p21 10.129.1.10
 
 # Service + version detection
@@ -114,21 +114,21 @@ nmap -sV -p21 10.129.1.10
 
 ## vsftpd Notes
 
-- **vsftpd** — "Very Secure FTP Daemon", muy común en Linux
-- El acceso anónimo depende de `anonymous_enable=YES` en `/etc/vsftpd.conf`
-- Lo vimos en: **Fawn** (flag directa en root), **Crocodile** (listas user/password → web login)
+- **vsftpd** — "Very Secure FTP Daemon", very common on Linux
+- Anonymous access depends on `anonymous_enable=YES` in `/etc/vsftpd.conf`
+- We saw it on: **Fawn** (flag directly in root), **Crocodile** (user/password lists → web login)
 
 ---
 
-## Response Codes — Los que verás
+## Response Codes — What you'll see
 
-| Code | Significado |
+| Code | Meaning |
 | :--- | :---------- |
-| **220** | Servicio listo |
-| **227** | Entrando en Passive Mode |
-| **230** | Login exitoso ✅ |
-| **331** | Username OK, necesita password |
-| **425** | No se puede abrir data connection (prueba `passive`) |
+| **220** | Service ready |
+| **227** | Entering Passive Mode |
+| **230** | Login successful ✅ |
+| **331** | Username OK, needs password |
+| **425** | Can't open data connection (try `passive`) |
 | **530** | Not logged in |
 
 ---

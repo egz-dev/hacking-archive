@@ -58,13 +58,17 @@ nav:
           - 💾 Redeemer: writeups/💾 Redeemer.md
           - 📅 Appointment: writeups/📅 Appointment.md
           - 🔄 Synced: writeups/🔄 Synced.md
+          - 🥉 Three: writeups/🥉 Three.md
           - 🦌 Fawn: writeups/🦌 Fawn.md
           - 🧑‍🚒 Responder: writeups/🧑‍🚒 Responder.md
           - 🧨 Preignition: writeups/🧨 Preignition.md
           - 🩰 Dancing: writeups/🩰 Dancing.md
   - Guides:
       - guides/index.md
+      - ☁️ Aws S3: guides/☁️ AWS S3.md
       - 🍃 Mongodb: guides/🍃 MongoDB.md
+      - 🎯 Ffuf: guides/🎯 ffuf.md
+      - 🐚 Php Webshell: guides/🐚 PHP Webshell.md
       - 🐬 Mysql: guides/🐬 MySQL.md
       - 💉 Lfi & Rfi: guides/💉 LFI & RFI.md
       - 💉 Sql Injection: guides/💉 SQL Injection.md
